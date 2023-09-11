@@ -20,6 +20,9 @@ from Models import Model_sin,Model_poly
 from scipy.fftpack import dct,idct
 import pywt 
 
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 class Residual_Encoder(Antonini_Encoder,Khan_Encoder):
     def __init__(self,N=128):

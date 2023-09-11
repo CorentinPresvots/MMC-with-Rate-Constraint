@@ -12,7 +12,7 @@ from codage_model import Model_Encoder,Model_Decoder
 from codage_residu import Residual_Encoder,Residual_Decoder
 from Allocation_two_stages import Allocation_sin_bx_br,Allocation_poly_bx_br
 
-from Models import Model_sin,Model_poly
+#from Models import Model_sin,Model_poly
 from Measures import get_snr,my_bin,my_inv_bin
 
 """
