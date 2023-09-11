@@ -316,7 +316,7 @@ class Antonini_Encoder(Context_Aritmetic_Encoder):
         return symbol_second,coefs_rec_second
         """
 
-    def get_code_res(self,coefs,br):
+    def get_code_res_Antonini(self,coefs,br):
         # Obtenir le code résultant et le nombre de bits par coefficient
         self.reset_Antonini_Encoder(coefs,br)
         
@@ -549,7 +549,7 @@ class Antonini_Decoder(Context_Aritmetic_Decoder):
         #self.threshold/=2
     
     
-    def get_coefs_rec(self,code,br):
+    def get_coefs_rec_Antonini(self,code,br):
         # Obtenir les coefficients reconstruit à partir de la suite binaire code
         
        
@@ -642,7 +642,7 @@ if __name__ == "__main__":
 
     AE=Antonini_Encoder(M,initial_occurrence_first,initial_occurrence_second,adaptive,verbose_AE=verbose)
 
-    code=AE.get_code_res(coefs_n,br)
+    code=AE.get_code_res_Antonini(coefs_n,br)
     
 
     
@@ -716,7 +716,7 @@ if __name__ == "__main__":
     
 
         
-    coefs_rec_D_n=AD.get_coefs_rec(code,br)
+    coefs_rec_D_n=AD.get_coefs_rec_Antonini(code,br)
     
     
     #print(AD.symbol)
