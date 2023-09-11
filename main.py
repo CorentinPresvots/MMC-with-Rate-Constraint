@@ -117,7 +117,8 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
    
         
         ##################### détermination de tous les theta_hat modèles pour les modèles conssidérés:  sin, poly 0,...,6
-        if np.abs(np.mean(x_n))<0.1: # test pour discriminer le modèle sin si la moyenne du signal n'est pas nul
+       
+        if np.abs(np.mean(x_n))<0.01: # test pour discriminer le modèle sin si la moyenne du signal n'est pas nul
             theta_sin_hat=self.get_theta_sin(x_n)
         else : 
             theta_sin_hat=self.m_sin
