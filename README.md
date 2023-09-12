@@ -27,7 +27,7 @@ Stage 2: The different competing residual compression methods are:
 
 
 
-# main
+# main.py
 The main file will compress a 2-second reference signal:
 
 A single-phase voltage signal recorded on the RTE network is considered. This signal was sampled at
@@ -48,19 +48,20 @@ From this binary frame, the decoder reconstructs the signal.
 
 Note that 100 plots will be generated when compiling the main file. These plots depict, for each window, the reconstructed model and the reconstructed signal on b_tot bits. In the main file, you have the option to comment out the following section responsible for displaying the windows:
 
-plt.figure(figsize=(8, 4), dpi=100)
-plt.plot(t, x_test, lw=2, label='x')
-plt.plot(t, x_poly_hat, lw=2, label='x hat, SNR={:.1f} dB'.format(get_snr(x_test, x_poly_hat)))
-plt.plot(t, x_poly_tilde, lw=2, label='x tilde, SNR={:.1f} dB, bx={} b'.format(get_snr(x_test, x_poly_tilde), bx_test))
-plt.plot(t, x_poly_rec, lw=2,label='x rec, SNR={:.1f} dB, bx={}+len(code)={}={} b'.format(get_snr(x_test, x_poly_rec), bx_test, len(code),bx_test + len(code)))
-plt.xlabel('t [s]')
-plt.ylabel('Amplitude')
-plt.legend()
-plt.title("Polynomial Model of Order {}".format(order))
-plt.grid(which='major', color='#666666', linestyle='-')
-plt.minorticks_on()
-plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
-plt.show()
+
+plt.figure(figsize=(8, 4), dpi=100)  
+plt.plot(t, x_test, lw=2, label='x')  
+plt.plot(t, x_poly_hat, lw=2, label='x hat, SNR={:.1f} dB'.format(get_snr(x_test, x_poly_hat)))  
+plt.plot(t, x_poly_tilde, lw=2, label='x tilde, SNR={:.1f} dB, bx={} b'.format(get_snr(x_test, x_poly_tilde), bx_test))  
+plt.plot(t, x_poly_rec, lw=2,label='x rec, SNR={:.1f} dB, bx={}+len(code)={}={} b'.format(get_snr(x_test, x_poly_rec), bx_test, len(code),bx_test + len(code)))  
+plt.xlabel('t [s]')  
+plt.ylabel('Amplitude')  
+plt.legend()  
+plt.title("Polynomial Model of Order {}".format(order))  
+plt.grid(which='major', color='#666666', linestyle='-')  
+plt.minorticks_on()  
+plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)  
+plt.show()  
 
 It is also possible that the compression of the next window may only begin after closing the previously opened window.
 
