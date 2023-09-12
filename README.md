@@ -1,4 +1,13 @@
-# Multiple-Models Coding Scheme
+# Multiple-Model Coding Scheme
+
+
+This code proposes a low-latency Multiple-Model Coding (MMC) approach to compress sampled electrical signal
+waveforms under encoding rate constraints. The approach is window-based. Several parametric waveform models
+are put in competition to obtain a first coarse representation of the signal in each considered window. Then, different
+residual compression techniques are compared to minimize the residual reconstruction error. The model parameters
+are quantized, and the allocation of the rate budget among the two steps is optimized.
+
+
 
 Stage 1: The various competing models include
 
