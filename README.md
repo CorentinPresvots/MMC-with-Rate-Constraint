@@ -24,8 +24,13 @@ The main file performs compression for each window; the encoder takes the sample
 From this binary frame, the decoder reconstructs the signal.
 
 # Prerequisites
+
 -numpy
+
 -matplotlib.pyplot
+
 -accumulate from the itertools library
+
 -dct, idct from the scipy.fftpack library
+
 -fsolve from the scipy.optimize library
