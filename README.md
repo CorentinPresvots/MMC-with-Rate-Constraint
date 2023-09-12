@@ -1,4 +1,4 @@
-#Multiple-Models Coding Scheme
+# Multiple-Models Coding Scheme
 
 The various competing models include:
 
@@ -10,7 +10,7 @@ The different competing residual compression methods are:
 -Antonini's method (Antonini_DCT)
 -Khan's method (Khan_DWT)
 
-#main
+# main
 The main file will compress a 2-second reference signal:
 
 A single-phase voltage signal recorded on the RTE network is considered. This signal was sampled at
@@ -23,7 +23,7 @@ The maximum bit rate to encode each window is b_tot (can be modified in the main
 The main file performs compression for each window; the encoder takes the samples and the b_tot bit rate as input and returns the binary frame corresponding to the compressed window signal on b_tot bits.
 From this binary frame, the decoder reconstructs the signal.
 
-#Prerequisites
+# Prerequisites
 -numpy
 -matplotlib.pyplot
 -accumulate from the itertools library
