@@ -144,23 +144,19 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         #print("bx_sin_opt=", bx_sin_hat)
         #print("bx_poly_opt=", bx_poly_hat)
         #################### début test modèle
-        
+
+        m='poly-0'
+        b_bx=self.b_bx_poly[0]
+        bx=0
+        theta_hat=[0]
+        theta_tilde=[0]
+        code_theta_tilde=[] 
+        x_model=np.zeros(self.N)
+        SNR_model=get_snr(x_n,x_model)
         to_do_second_stage=1
+        
         for bx_test in range(0,btot-self.bh):
-            m='poly-0'
-            b_bx=self.b_bx_poly[0]
-            bx=0
-            
-            theta_hat=[0]
-            theta_tilde=[0]
-            
-            code_theta_tilde=[]
-            
-            x_model=np.zeros(self.N)
-            
-            SNR_model=0
-            
-            #print("sin", bx_sin_hat-self.nb_test,bx_sin_hat+self.nb_test)
+
             ### TEST SIN 
             if  bx_sin_hat-self.nb_test<=bx_test and bx_test<= bx_sin_hat+self.nb_test and bx_test<=btot-self.bh-self.b_bx_sin and bx_test<=2**self.b_bx_sin-1:
 
@@ -172,16 +168,11 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     m='sin'
                     b_bx=self.b_bx_sin
                     bx=bx_test
-                    
                     theta_hat=theta_sin_hat
                     theta_tilde=theta_sin_tilde_test
-                    
                     code_theta_tilde=code_theta_sin_tilde_test
-                    
                     x_model=x_sin_tilde_test
-                    
                     SNR_model=SNR_model_test
-                    
                     to_do_second_stage=1
                     
                 
@@ -197,16 +188,11 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                         m='poly-{}'.format(self.list_poly_used[k])
                         b_bx=self.b_bx_poly[self.list_poly_used[k]]
                         bx=bx_test
-                        
                         theta_hat=theta_poly_hat[k]
                         theta_tilde=theta_poly_tilde_test
-                        
                         code_theta_tilde=code_theta_poly_tilde_test
-                        
                         x_model=x_poly_tilde_test
-                        
                         SNR_model=SNR_model_test
-                        
                         to_do_second_stage=1
                     
           
