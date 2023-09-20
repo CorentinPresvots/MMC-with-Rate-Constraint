@@ -187,7 +187,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                 
             ### TESTs POLY
             for k in range(len(self.list_poly_used)):
-                if  bx_poly_hat[k]-self.nb_test<=bx_test and bx_test>=bx_poly_hat[k]+self.nb_test and bx_test<=btot-self.bh-self.b_bx_poly[k] and bx_test<=2**self.b_bx_poly[k]-1:
+                if  bx_poly_hat[k]-self.nb_test<=bx_test and bx_test<=bx_poly_hat[k]+self.nb_test and bx_test<=btot-self.bh-self.b_bx_poly[k] and bx_test<=2**self.b_bx_poly[k]-1:
     
                     theta_poly_tilde_test,code_theta_poly_tilde_test=self.get_theta_poly_tilde(theta_poly_hat[k],bx_test)
                     x_poly_tilde_test=self.get_model_poly(self.t,*theta_poly_tilde_test) 
