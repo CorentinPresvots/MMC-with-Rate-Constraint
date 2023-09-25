@@ -478,7 +478,7 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
 # Programme principal
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    from subsampling import dynamic_subsample
+  
     #from get_RTE_test_signal import x_test_RTE
     N=128 # taille d'une fenêtre
     fn=50 # fréquence nominale du réseau
