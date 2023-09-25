@@ -40,7 +40,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
     
         
         self.nb_test=5 # nombre de test réalisé autour de bx et br théorique déterminé complexité: pour un modèle on test -self.nb_test + bx_opt à self.nb_test + bx_opt
-        self.nb_max_bit_theta=12 # nombre de bits maximale par coefficient
+        self.nb_max_bit_theta=10 # nombre de bits maximale par coefficient
         
         #self.list_btot=[32,64,96,128,160,192,224,256]
     
@@ -245,8 +245,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                 
                 
                 br=btot-self.bh-bx-b_bx-b_kr
-                #if br>=0: ## pour fixer le nombre de bits servant à coder le résidu
-                #    br=50
+ 
                 
                 ########## normalisation de r
                 _,kr=normalize(r)
@@ -347,7 +346,7 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
  
     
        
-        self.nb_max_bit_theta=12 # nombre de bits maximale par coefficient
+        self.nb_max_bit_theta=10 # nombre de bits maximale par coefficient
 
         #self.list_btot=[32,64,96,128,160,192,224,256]
     
