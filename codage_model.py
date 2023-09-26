@@ -294,12 +294,17 @@ class Model_Decoder(Model_sin,Model_poly,Allocation_sin,Allocation_poly,Quantize
             theta_tilde=self.get_theta_sin_tilde(code,bm)
             model_rec=self.get_model_sin(self.t,*theta_tilde) 
             return model_rec
+        elif m=="none":
+            
+            model_rec=np.zeros(self.N) 
+            return model_rec
         else :
        
             order=int(m[5:])
             theta_tilde=self.get_theta_poly_tilde(code,bm,order)
             model_rec=self.get_model_poly(self.t,*theta_tilde) 
             return model_rec
+
 
 
 
