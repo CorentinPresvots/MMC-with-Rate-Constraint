@@ -14,7 +14,7 @@ import math
 from Quantization import Quantizer
 from Measures import get_snr
 from Bits_allocation import Allocation_sin,Allocation_poly
-from Models import Model_sin,Model_poly
+from Models_L1 import Model_sin,Model_poly
  
 
 
@@ -126,12 +126,12 @@ class Model_Encoder(Model_sin,Model_poly,Allocation_sin,Allocation_poly,Quantize
     
     def best_model(self,x,bm):
            
-        SNR_best=-100
-        m_best="sin"
+        #SNR_best=-100
+        #m_best="sin"
         #theta_hat_best=[]
         #theta_tilde_best=[]
-        code_theta_tilde_best=[]
-        x_rec_best=np.zeros(self.N)
+        #code_theta_tilde_best=[0]*bm
+        #x_rec_best=np.zeros(self.N)
         
         
         plt.figure(figsize=(8,4), dpi=100)
@@ -139,31 +139,32 @@ class Model_Encoder(Model_sin,Model_poly,Allocation_sin,Allocation_poly,Quantize
         
         
         #### test sin
-        if np.abs(np.mean(x))<0.1: # test pour discriminer le modèle sin si la moyenne du signal n'est pas nul
+        #print(np.abs(np.mean(x)))
+        #if np.abs(np.mean(x))<0.1: # test pour discriminer le modèle sin si la moyenne du signal n'est pas nul
             
-            theta_sin_hat_test=self.get_theta_sin(x)
-            theta_sin_tilde_test,code_theta_sin_tilde_test=self.get_theta_sin_tilde(theta_sin_hat_test,bm)
-            x_sin_tilde_test=self.get_model_sin(self.t,*theta_sin_tilde_test) 
-            SNR_test=get_snr(x,x_sin_tilde_test)
-            
+        theta_sin_hat_test=self.get_theta_sin(x)
+        theta_sin_tilde_test,code_theta_sin_tilde_test=self.get_theta_sin_tilde(theta_sin_hat_test,bm)
+        x_sin_tilde_test=self.get_model_sin(self.t,*theta_sin_tilde_test) 
+        SNR_test=get_snr(x,x_sin_tilde_test)
+        """    
         else:
             theta_sin_tilde_test=[0,0,0]
             code_theta_sin_tilde_test=[0]*bm
             theta_sin_hat_test=[0,0,0]
             x_sin_tilde_test=np.zeros(self.N)
             SNR_test=get_snr(x,x_sin_tilde_test)
+        """
+        #if SNR_test>SNR_best:
+        SNR_best=SNR_test
+        m_best="sin"
+        #theta_hat_best=theta_sin_hat_test
+        #theta_tilde_best=theta_sin_tilde_test
+        code_theta_tilde_best=code_theta_sin_tilde_test
+        x_rec_best= x_sin_tilde_test
+    
+    
         
-        if SNR_test>SNR_best:
-            SNR_best=SNR_test
-            m_best="sin"
-            #theta_hat_best=theta_sin_hat_test
-            #theta_tilde_best=theta_sin_tilde_test
-            code_theta_tilde_best=code_theta_sin_tilde_test
-            x_rec_best= x_sin_tilde_test
-        
-        
-        
-        plt.plot(t,x_sin_tilde_test,lw=2,label='x tilde, SNR={:.1f} dB, bm={} bits'.format(get_snr(x_sin,x_sin_tilde_test),bm))
+        plt.plot(t,x_sin_tilde_test,lw=2,label='x sin, SNR={:.2f} dB, bm={} bits'.format(get_snr(x_sin,x_sin_tilde_test),bm))
        
         
 
@@ -308,10 +309,9 @@ class Model_Decoder(Model_sin,Model_poly,Allocation_sin,Allocation_poly,Quantize
 
 
 
-
 # Programme principal
 if __name__ == "__main__":
-
+    from Normalize import normalize
     
     verbose = False
     N=128
@@ -322,7 +322,7 @@ if __name__ == "__main__":
     
     t=np.linspace(0,(N-1)/fs,N)
     
-    bm=0 ### nombre de bits total pour coder theta
+    bm=25 ### nombre de bits total pour coder theta
     
     sigma=0.1 # écart type du bruit introduit dans le signal test
         
@@ -424,7 +424,7 @@ if __name__ == "__main__":
 
     ######################### test best models
 
-    x_test=x_sin
+    x_test=x_sin#normalize(np.array([37.797, 40.045, 42.603, 44.903, 47.052, 48.893, 50.938, 52.983, 54.876, 57.024, 58.814, 60.603, 62.548, 64.697, 66.383, 68.172, 69.81, 71.803, 73.338, 75.179, 76.614, 78.148, 79.528, 81.01, 82.341, 83.721, 85.255, 86.483, 87.607, 88.734, 89.603, 90.524, 91.648, 92.724, 93.693, 94.614, 95.483, 96.2, 96.61, 97.172, 97.938, 98.552, 98.962, 99.321, 99.679, 100.034, 100.241, 100.393, 100.497, 100.293, 100.293, 100.034, 100.034, 99.628, 99.679, 99.321, 98.707, 98.245, 97.479, 96.866, 96.2, 95.69, 94.972, 94.462, 93.693, 92.824, 92.007, 91.238, 90.472, 89.5, 88.683, 87.607, 86.586, 85.614, 84.59, 83.362, 82.186, 80.859, 79.528, 78.555, 77.276, 75.641, 73.952, 72.214, 70.321, 68.379, 66.486, 64.338, 62.19, 59.89, 57.69, 55.541, 53.086, 50.683, 47.972, 44.903, 41.579, 38.1, 34.112, 30.379, 27.362, 25.162, 23.27, 21.992, 20.304, 19.128, 18.053, 17.133, 16.212, 15.19, 14.218, 13.451, 12.581, 11.865, 11.149, 10.382, 9.564, 8.746, 7.978, 7.262, 6.751, 6.137, 5.421, 4.756, 4.194, 3.58, 2.915, 2.353]))[0]#x_sin
     best_SNR,best_model,x_dec_enc,code=m.best_model(x_test, bm)
     print("best SNR: {:.1f} dB.".format(best_SNR),"best model:",best_model,"bm={}, code={}, len(code)={}".format(bm,code,len(code)))
     
