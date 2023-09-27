@@ -14,7 +14,7 @@ import math
 from Quantization import Quantizer
 from Measures import get_snr
 from Bits_allocation import Allocation_sin,Allocation_poly
-from Models_L1 import Model_sin,Model_poly
+from Models import Model_sin,Model_poly
  
 
 
