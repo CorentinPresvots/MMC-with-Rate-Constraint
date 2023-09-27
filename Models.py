@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Aug  2 12:55:28 2023
+Created on Wed Sep 27 15:48:58 2023
 
-@author: coren
+@author: presvotscor
 """
+
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
+from scipy.optimize import minimize
 import math
 
 
@@ -27,7 +28,12 @@ class Models:
         
         #if (self.verbose):
         #    print("T",self.T)
-     
+        
+    def norm(self,x,y):
+        #error = np.sum(np.square(y - x))
+        error = np.sum(np.abs(y - x))
+        return error
+ 
 class Model_sin(Models): 
     def __init__(self,fn=50,fs=6400,N=128,verbose=False):
     #    print("N",self.N)
@@ -57,16 +63,30 @@ class Model_sin(Models):
         
         return [a,self.fn,phi]
         
-    def get_model_sin(self,t,*theta):
 
+    def get_model_sin(self,t,*theta):
+        #print("theta",theta)
         return theta[0]*np.cos(2*math.pi*theta[1]*t+theta[2])
 
+    
+    def cost_function_sin(self,theta,y):
+        x=self.get_model_sin(self.t,*theta)
+        return self.norm(x,y)
+        
     def get_theta_sin(self,y):
         theta_ini=self.get_theta_sin_ini(y) # theta0
         if self.verbose:
             print("theta ini", theta_ini)
-        hat_theta, _ = curve_fit(self.get_model_sin,self.t,y,p0=theta_ini)
-        return hat_theta
+            
+        #bounds = [(amin, amax), (fmin, fmax), (phimin, phimax)]
+
+        result = minimize(self.cost_function_sin, theta_ini, y, method='SLSQP')#, bounds=bounds)
+
+
+            
+        #hat_theta, _ = curve_fit(self.get_model_sin,self.t,y,p0=theta_ini)
+        #print("[*result.x]",[*result.x])
+        return [*result.x]
 
 
 
@@ -100,22 +120,33 @@ class Model_poly(Models):
         return model
     
     
-    
+    def cost_function_poly(self,theta,y):
+        x=self.get_model_poly(self.t,*theta)
+        return self.norm(x,y)
     
     def get_theta_poly(self, y, order):
         theta_ini = self.get_theta_poly_ini(y, order)
         
         if self.verbose:
             print("theta ini", theta_ini)
-        hat_theta, _ = curve_fit(self.get_model_poly, self.t, y, p0=theta_ini)
-        return hat_theta
+            
+            
+        #bounds = [(amin, amax), (fmin, fmax), (phimin, phimax)]
+
+        result = minimize(self.cost_function_poly, theta_ini, y, method='SLSQP')#, bounds=bounds)
+
+ 
+        #hat_theta, _ = curve_fit(self.get_model_sin,self.t,y,p0=theta_ini)
+        return [*result.x]
+            
 
 
   
 # Programme principal
 if __name__ == "__main__":
-    from Measures import get_snr
-    verbose = True
+    from Measures import get_snr,get_snr_l1
+    from subsampling import dynamic_subsample
+    verbose = False
     N=128 
     fn=50
     fs=6400
@@ -126,7 +157,7 @@ if __name__ == "__main__":
     
     model_sin=Model_sin(fn,fs,N,verbose)
     
-    sigma=0.1 # écart type du bruit introduit dans le signal test
+    sigma=0.2 # écart type du bruit introduit dans le signal test
     
     ###############  test model sinusoïdal
     
@@ -137,6 +168,9 @@ if __name__ == "__main__":
     
     
     x_sin=model_sin.get_model_sin(t,*theta)+np.random.normal(0,sigma,N) 
+    #x_sin[20]=20
+    #x_sin[40]=15
+    #x_sin[60]=20
     
     
     print("theta_hat",model_sin.get_theta_sin(x_sin))
@@ -147,8 +181,8 @@ if __name__ == "__main__":
     
     plt.figure(figsize=(8,4), dpi=100)
     plt.plot(t,x_sin,lw=2,label='x')
-    plt.plot(t,x_sin_ini,lw=2,label='x ini, SNR={:.1f} dB'.format(get_snr(x_sin,x_sin_ini)))
-    plt.plot(t,x_sin_hat,lw=2,label='x hat, SNR={:.1f} dB'.format(get_snr(x_sin,x_sin_hat)))
+    plt.plot(t,x_sin_ini,lw=2,label='x ini, SNR_L2={:.1f} dB, SNR_L1={:.1f} dB'.format(get_snr(x_sin,x_sin_ini),get_snr_l1(x_sin,x_sin_ini)))
+    plt.plot(t,x_sin_hat,lw=2,label='x hat, SNR_L2={:.1f} dB, SNR_L1={:.1f} dB'.format(get_snr(x_sin,x_sin_hat),get_snr_l1(x_sin,x_sin_hat)))
     plt.xlabel('t [s]')
     plt.ylabel('Amplitude')
     plt.legend()
@@ -158,14 +192,31 @@ if __name__ == "__main__":
     plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
     plt.show()
     
-   
+    plt.figure(figsize=(8,4), dpi=100)
+    plt.plot(t,x_sin-x_sin_hat,lw=2,label='x hat, SNR_L2={:.1f} dB, SNR_L1={:.1f} dB'.format(get_snr(x_sin,x_sin_hat),get_snr_l1(x_sin,x_sin_hat)))
+    plt.xlabel('t [s]')
+    plt.ylabel('Amplitude')
+    plt.legend()
+    plt.title("Erreur de reconstrucction")
+    plt.grid( which='major', color='#666666', linestyle='-')
+    plt.minorticks_on()
+    plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
+    plt.show()
+    
+    
+
     ###############  test polynôme d'ordre k
-    order=2
+    order=0
+ 
     theta=np.random.uniform(-1,1,order+1)
   
     model_poly=Model_poly(fn,fs,N,verbose)
     
+    
     x_poly=model_poly.get_model_poly(t,*theta)+np.random.normal(0,sigma,N)
+    #x_poly[20]=20
+    #x_poly[40]=15
+    #x_poly[60]=20
     
     x_poly_hat=model_poly.get_model_poly(t,*model_poly.get_theta_poly(x_poly,order))
     
@@ -174,8 +225,8 @@ if __name__ == "__main__":
     
     plt.figure(figsize=(8,4), dpi=100)
     plt.plot(t,x_poly,lw=2,label='x')
-    plt.plot(t,x_poly_ini,lw=2,label='x ini, SNR={:.1f} dB'.format(get_snr(x_poly,x_poly_ini)))
-    plt.plot(t,x_poly_hat,lw=2,label='x hat, SNR={:.1f} dB'.format(get_snr(x_poly,x_poly_hat)))
+    plt.plot(t,x_poly_ini,lw=2,label='x ini, SNR_L2={:.1f} dB, SNR_L1={:.1f} dB'.format(get_snr(x_poly,x_poly_ini),get_snr_l1(x_poly,x_poly_ini)))
+    plt.plot(t,x_poly_hat,lw=2,label='x hat, SNR_L2={:.1f} dB, SNR_L1={:.1f} dB'.format(get_snr(x_poly,x_poly_hat),get_snr_l1(x_poly,x_poly_hat)))
     plt.xlabel('t [s]')
     plt.ylabel('Amplitude')
     plt.legend()
@@ -184,5 +235,17 @@ if __name__ == "__main__":
     plt.minorticks_on()
     plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
     plt.show()    
+   
+    plt.figure(figsize=(8,4), dpi=100)
+    plt.plot(t,x_poly-x_poly_hat,lw=2,label='x hat, SNR_L2={:.1f} dB, SNR_L1={:.1f} dB'.format(get_snr(x_poly,x_poly_hat),get_snr_l1(x_poly,x_poly_hat)))
+    plt.xlabel('t [s]')
+    plt.ylabel('Amplitude')
+    plt.legend()
+    plt.title("Erreur de reconstruction poar le modèle polynomial d'ordre {}".format(order))
+    plt.grid( which='major', color='#666666', linestyle='-')
+    plt.minorticks_on()
+    plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
+    plt.show()    
+     
    
   
