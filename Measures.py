@@ -30,6 +30,18 @@ def get_snr(signal, signal_rec):
     snr_db = 10 * np.log10(signal_power / noise_power)
     
     return snr_db
+    
+def get_snr_l1(signal, signal_rec):
+    # Calculer la summ des valeurs absolues du signal
+    
+    signal_power = np.sum(np.abs(signal))
+    
+    # Calculer de la somme des valeurs absolue du bruit
+    noise_power = np.sum(np.abs(signal-signal_rec))
+    
+    # Calculer le ? en décibels (dB)
+    snr_l1_db = 20 * np.log10(signal_power / noise_power)
+    return snr_l1_db
 
     
 def my_bin(ind,b):
