@@ -66,10 +66,10 @@ Article is available at: [MMC](https://www.researchgate.net/publication/37422667
               - 
 ## Stage 2: The different competing residual compression methods are:
 
-- Antonini's method (Antonini_DCT)
+- Antonini's method (DCT+BPC)
 
 
-- Khan's method (Khan_DWT)
+- Khan's method (DWT+BPC)
 
 
 
