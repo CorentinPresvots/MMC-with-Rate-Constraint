@@ -33,7 +33,7 @@ are quantized, and the allocation of the rate budget among the two steps is opti
  
     
 - **Parameter predictive models. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros. $i$: index of current window**
--   $\left(\boldsymbol{\theta}_i-\boldsymbol{\theta}_i-1\right)$
+-   $\left(\boldsymbol{\theta}_i-\boldsymbol{\theta}_(i-1)\right)$
   - (pred para-2) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(2\left(\boldsymbol{\theta}_{\left(i\right)}-\boldsymbol{\theta}_{\left(i\right)}\right);\left[-1,1 \right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
   - (pred para-5) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(5\left(\boldsymbol{\theta_n}-\boldsymbol{\theta_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
   - (pred para-10) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(10\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
