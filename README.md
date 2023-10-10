@@ -15,8 +15,8 @@ are quantized, and the allocation of the rate budget among the two steps is opti
 
 
 - **Sinusoidal models**
-  - (sin-1) \(\boldsymbol{m}=(m_a,m_f,m_\phi)=(0.75,f_n,0)\) and \(\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.2,2\pi)\)
-  - (sin-2) \(\boldsymbol{m}=(0.75,f_n,0)\) and \(\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.05,2\pi)\)
+  - (sin-1) $\boldsymbol{m}=(m_a,m_f,m_\phi)=(0.75,f_n,0)$ and $\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.2,2\pi)$
+  - (sin-2) $\boldsymbol{m}=(0.75,f_n,0)$ and $\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.05,2\pi)$
 
 
 - **Polynomial models of order 0 to 8. Mean value of \boldsymbol{\theta}\) is assumed to be zeros.**  
