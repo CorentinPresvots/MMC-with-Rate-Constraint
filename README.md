@@ -21,11 +21,11 @@ are quantized, and the allocation of the rate budget among the two steps is opti
 
 
 - **Polynomial models of order 0 to 8. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros.**  
-  - (poly-{0,1,2,3,4,5,6,7,8}) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1]^{\{0,1,2,3,4,5,6,7,8\}}\right)$
+  - (poly-{0,1,2,3,4,5,6,7,8}) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{\{0,1,2,3,4,5,6,7,8\}}\right)$
 
     
 - **Parameter predictive models. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros. $i$: index of current window** 
-  - (pred para-{2,5,10,50,100,500,1000}) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\{2,5,10,50,100,500,1000\}\times\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
+  - (pred para-{2,5,10,50,100,500,1000}) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\{2,5,10,50,100,500,1000\}\times\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1 \right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
 
 
   
