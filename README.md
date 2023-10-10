@@ -2,6 +2,15 @@
 
 The article is available : [MMC](https://www.researchgate.net/publication/374226674_Multiple-Model_Coding_Scheme_for_Electrical_Signal_Compression)
 
+@article{PresvotsMMC2023
+  author = {Presvôts, Corentin and Kieffer, Michel and Prevost, Thibault and Panciatici, Patrick and Li, Zuxing and Piantanida, Pablo},
+  title = {Multiple-Model Coding Scheme for Electrical Signal Compression},
+  journal = {Signal Processing},
+  year = {2023},
+  note = {Available at SSRN: \url{https://ssrn.com/abstract=4584757} or \url{http://dx.doi.org/10.2139/ssrn.4584757}}
+}
+
+  
 This code proposes a low-latency Multiple-Model Coding approach to compress sampled electrical signal
 waveforms under encoding rate constraints. The approach is window-based. Several parametric waveform models
 are put in competition to obtain a first coarse representation of the signal in each considered window. Then, different
@@ -31,9 +40,9 @@ are quantized, and the allocation of the rate budget among the two steps is opti
   - (poly-7) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{8}\right)$
   - (poly-8) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{9}\right)$
  
-    
+<img src="https://render.githubusercontent.com/render/math?math=%5Cboldsymbol%7B%5Ctheta%7D_%7Bi-1%7D">    
 - **Parameter predictive models. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros. $i$: index of current window**
--   \(\left(\boldsymbol{\theta}_i - \boldsymbol{\theta}_{i-1}\right)\)
+-   $\boldsymbol{\theta}_{i-1}$
   - (pred para-2) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(2\left(\boldsymbol{\theta}_{\left(i\right)}-\boldsymbol{\theta}_{\left(i\right)}\right);\left[-1,1 \right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
   - (pred para-5) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(5\left(\boldsymbol{\theta_n}-\boldsymbol{\theta_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
   - (pred para-10) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(10\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
