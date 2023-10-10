@@ -15,7 +15,7 @@ are quantized, and the allocation of the rate budget among the two steps is opti
 
 
 - **Sinusoidal models**
-  - (sin-1) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.2},\frac{\phi}{\pi}\right);\left[-1,1\right]^3\right)$ 
+  - (sin-1) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.2},\frac{\phi}{\pi}\right);\left[-1,1 \right]^3\right)$ 
   - (sin-2) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.05},\frac{\phi}{\pi}\right);\left[-1,1\right]^3\right)$
 
 
