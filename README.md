@@ -12,8 +12,8 @@ are quantized, and the allocation of the rate budget among the two steps is opti
 ## Stage 1: The various competing models include
 
 
-- **No model (none)**
-
+- **No model**
+  -(none)
 
 - **Sinusoidal models**
   - (sin-1) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.2},\frac{\phi}{\pi}\right);\left[-1,1 \right]^3\right)$ 
@@ -33,9 +33,9 @@ are quantized, and the allocation of the rate budget among the two steps is opti
  
     
 - **Parameter predictive models. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros. $i$: index of current window**
--   $$\left(\boldsymbol{\theta}_{\left(i\right)}-\boldsymbol{\theta}_{\left(i\right)}\right)$$
+-   $\left(\boldsymbol{\theta}_i-\boldsymbol{\theta}_i-1\right)$
   - (pred para-2) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(2\left(\boldsymbol{\theta}_{\left(i\right)}-\boldsymbol{\theta}_{\left(i\right)}\right);\left[-1,1 \right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
-  - (pred para-5) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(5\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
+  - (pred para-5) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(5\left(\boldsymbol{\theta_n}-\boldsymbol{\theta_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
   - (pred para-10) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(10\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
   - (pred para-50) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(50\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
   - (pred para-100) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(100\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
