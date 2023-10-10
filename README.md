@@ -1,19 +1,16 @@
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-
 # Multiple-Model Coding (MMC) Scheme
 
 The article is available : [MMC](https://www.researchgate.net/publication/374226674_Multiple-Model_Coding_Scheme_for_Electrical_Signal_Compression)
 
-@article{PresvotsMMC2023
-  author = {Presvôts, Corentin and Kieffer, Michel and Prevost, Thibault and Panciatici, Patrick and Li, Zuxing and Piantanida, Pablo},
-  title = {Multiple-Model Coding Scheme for Electrical Signal Compression},
-  journal = {Signal Processing},
-  year = {2023},
-  note = {Available at SSRN: \url{https://ssrn.com/abstract=4584757} or \url{http://dx.doi.org/10.2139/ssrn.4584757}}
-}
+> **Citation :**
+>
+> @article{PresvotsMMC2023  
+> author = {Presvôts, Corentin and Kieffer, Michel and Prevost, Thibault and Panciatici, Patrick and Li, Zuxing and Piantanida, Pablo},  
+> title = {Multiple-Model Coding Scheme for Electrical Signal Compression},  
+> journal = {Signal Processing},  
+> year = {2023},  
+> note = {Available at SSRN: [https://ssrn.com/abstract=4584757](https://ssrn.com/abstract=4584757) or [http://dx.doi.org/10.2139/ssrn.4584757](http://dx.doi.org/10.2139/ssrn.4584757)}  
+> }
 
   
 This code proposes a low-latency Multiple-Model Coding approach to compress sampled electrical signal
