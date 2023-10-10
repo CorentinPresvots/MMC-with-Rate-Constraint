@@ -8,19 +8,50 @@ residual compression techniques are compared to minimize the residual reconstruc
 are quantized, and the allocation of the rate budget among the two steps is optimized.
 
 
-
-Stage 1: The various competing models include
-- No model
+## Stage 1: The various competing models include
 
 
-- Sinusoidal model
+- **No model (none)**
 
 
-- Polynomial models of order 0 to 8
+- **Sinusoidal models**
+  - (sin-1) \(\boldsymbol{m}=(m_a,m_f,m_\phi)=(0.75,f_n,0)\) and \(\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.2,2\pi)\)
+  - (sin-2) \(\boldsymbol{m}=(0.75,f_n,0)\) and \(\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.05,2\pi)\)
 
 
+- **Polynomial models of order 0 to 8. Mean value of \boldsymbol{\theta}\) is assumed to be zeros.**  
+  - (poly-0) \(\boldsymbol{w}=(w_{\theta_1})=(2)\)
+  - (poly-1) \(\boldsymbol{w}=(w_{\theta_1},w_{\theta_2})=(2,2)\)
+  - (poly-2) \(\boldsymbol{w}=(2,2,2)\)
+  - ...
+  - (poly-8) \(\boldsymbol{w}=(2,2,2,2,2,2,2,2,2)\)
+    
 
-Stage 2: The different competing residual compression methods are:
+- **Parameter predictive models. Mean value of \(\boldsymbol{\theta}\) is assume to be nul. \(i\): index of current window** 
+  - (pred para-2) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/2\)
+  - (pred para-5) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/5\)
+  - (pred para-10) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/10\)
+  - (pred para-50) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/50\)
+  - (pred para-100) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/100\)
+  - (pred para-500) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/500\)
+  - (pred para-1000) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/1000\)
+
+  
+- **Sample predictive models. Mean value is estimate depending of previous encoded window**
+  - (pred samples-1-0) \(N_p=0\), \(\eta=0\) \(\boldsymbol{w}=(0.1)\)
+  - (pred samples-1-1) \(N_p=0\), \(\eta=1\) \(\boldsymbol{w}=(0.1)\)
+  - (pred para-2-0) \(N_p=1\), \(\eta=0\) \(\boldsymbol{w}=(0.3,0.3)\)
+  - (pred para-2-0) \(N_p=1\), \(\eta=1\) \(\boldsymbol{w}=(0.3,0.3)\)
+  - (pred para-3-0) \(N_p=2\), \(\eta=0\) \(\boldsymbol{w}=(0.5,0.5,0.5)\)
+  - (pred para-3-1) \(N_p=2\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5)\)
+  - (pred para-4-0) \(N_p=3\), \(\eta=0\) \(\boldsymbol{w}=(1.5,1.5,1.5)\)
+  - (pred para-4-1) \(N_p=3\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5)\)
+  - (pred para-5-0) \(N_p=4\), \(\eta=0\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5)\)
+  - (pred para-5-1) \(N_p=4\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5)\)
+  - (pred para-6-0) \(N_p=5\), \(\eta=0\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5,1.5)\)
+  - (pred para-6-1) \(N_p=5\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5,1.5)\)
+              - 
+## Stage 2: The different competing residual compression methods are:
 
 - Antonini's method (Antonini_DCT)
 
