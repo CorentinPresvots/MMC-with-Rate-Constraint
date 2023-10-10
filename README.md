@@ -15,26 +15,17 @@ are quantized, and the allocation of the rate budget among the two steps is opti
 
 
 - **Sinusoidal models**
-  - (sin-1) $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.2},\frac{\phi}{\pi}\right)$   $\boldsymbol{m}=(m_\text{a},m_\text{f},m_\text{phi}=(0.75,f_\text{n},0)$ and $\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.2,2\pi)$
-  - (sin-2) $\boldsymbol{m}=(0.75,f_n,0)$ and $\boldsymbol{w}=(w_a,w_f,w_\phi)=(0.5,0.05,2\pi)$
+  - (sin-1) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.2},\frac{\phi}{\pi}\right);\left[-1,1]^3\right)$ 
+  - (sin-2) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.05},\frac{\phi}{\pi}\right);\left[-1,1]^3\right)$
 
 
 - **Polynomial models of order 0 to 8. Mean value of \boldsymbol{\theta}\) is assumed to be zeros.**  
-  - (poly-0) \(\boldsymbol{w}=(w_{\theta_1})=(2)\)
-  - (poly-1) \(\boldsymbol{w}=(w_{\theta_1},w_{\theta_2})=(2,2)\)
-  - (poly-2) \(\boldsymbol{w}=(2,2,2)\)
-  - ...
-  - (poly-8) \(\boldsymbol{w}=(2,2,2,2,2,2,2,2,2)\)
-    
+  - (poly-{0,1,2,3,4,5,6,7,8}) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1]^{\{0,1,2,3,4,5,6,7,8\}}\right)$
 
+    
 - **Parameter predictive models. Mean value of \(\boldsymbol{\theta}\) is assumed to be zeros. \(i\): index of current window** 
-  - (pred para-2) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/2\)
-  - (pred para-5) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/5\)
-  - (pred para-10) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/10\)
-  - (pred para-50) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/50\)
-  - (pred para-100) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/100\)
-  - (pred para-500) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/500\)
-  - (pred para-1000) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/1000\)
+  - (pred para-{2,5,10,50,100,500,1000}) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\{2,5,10,50,100,500,1000\}\times\left(\boldsymbol{\theta}_{n}-\boldsymbol{\theta}_{n-1}\right);\left[-1,1]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
+
 
   
 - **Sample predictive models. Mean value is estimate depending of previous encoded window**
