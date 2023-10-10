@@ -21,27 +21,40 @@ are quantized, and the allocation of the rate budget among the two steps is opti
 
 
 - **Polynomial models of order 0 to 8. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros.**  
-  - (poly-{0,1,2,3,4,5,6,7,8}) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{\{0,1,2,3,4,5,6,7,8\}}\right)$
-
+  - (poly-0) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{1}\right)$
+  - (poly-1) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{2}\right)$
+  - (poly-2) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{3}\right)$
+  - (poly-3) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{4}\right)$
+  - (poly-4) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{5}\right)$
+  - (poly-5) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{6}\right)$
+  - (poly-6) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{7}\right)$
+  - (poly-7) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{8}\right)$
+  - (poly-8) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{9}\right)$
+ 
     
 - **Parameter predictive models. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros. $i$: index of current window** 
-  - (pred para-{2,5,10,50,100,500,1000}) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\{2,5,10,50,100,500,1000\}\times\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1 \right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
-
-
-  
+  - (pred para-2) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(2\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
+  - (pred para-5) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(5\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
+  - (pred para-10) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(10\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$ 
+  - (pred para-50) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(50\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
+  - (pred para-100) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(100\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
+  - (pred para-500) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(500\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
+  - (pred para-1000) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(1000\left(\boldsymbol{\theta}_n-\boldsymbol{\theta}_{n-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
+ 
+    
 - **Sample predictive models. Mean value $\mathbb{E}\left[\boldsymbol{\theta}\right]=\left(m_1,\dots,m_{N_\text{p}}\right)$ is estimated depending of previous encoded window**
   - (pred samples-1-0) : $N_p=1$, $\eta=0$,  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
   - (pred samples-1-1) : $N_p=1$, $\eta=1$,  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
-  - (pred para-2-0) \(N_p=1\), \(\eta=0\) \(\boldsymbol{w}=(0.3,0.3)\)
-  - (pred para-2-0) \(N_p=1\), \(\eta=1\) \(\boldsymbol{w}=(0.3,0.3)\)
-  - (pred para-3-0) \(N_p=2\), \(\eta=0\) \(\boldsymbol{w}=(0.5,0.5,0.5)\)
-  - (pred para-3-1) \(N_p=2\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5)\)
-  - (pred para-4-0) \(N_p=3\), \(\eta=0\) \(\boldsymbol{w}=(1.5,1.5,1.5)\)
-  - (pred para-4-1) \(N_p=3\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5)\)
-  - (pred para-5-0) \(N_p=4\), \(\eta=0\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5)\)
-  - (pred para-5-1) \(N_p=4\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5)\)
-  - (pred para-6-0) \(N_p=5\), \(\eta=0\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5,1.5)\)
-  - (pred para-6-1) \(N_p=5\), \(\eta=1\) \(\boldsymbol{w}=(1.5,1.5,1.5,1.5,1.5,1.5)\)
+  - (pred para-2-0) $N_p=2$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.3};\left[-1,1\right]^{2}\right)$
+  - (pred para-2-1) $N_p=2$, $\eta=1$ $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.5};\left[-1,1\right]^{2}\right)$
+  - (pred para-3-0) $N_p=3$, $\eta=0$ $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{3}\right)$
+  - (pred para-3-1) $N_p=3$, $\eta=1$ $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{3}\right)$
+  - (pred para-4-0) $N_p=4$, $\eta=0$  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
+  - (pred para-4-1) $N_p=4$, $\eta=1$  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
+  - (pred para-5-0) $N_p=5$, $\eta=0$  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
+  - (pred para-5-1) $N_p=5$, $\eta=1$  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
+  - (pred para-6-0) $N_p=6$, $\eta=0$  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
+  - (pred para-6-1) $N_p=6$, $\eta=1$  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
               - 
 ## Stage 2: The different competing residual compression methods are:
 
