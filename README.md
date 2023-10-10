@@ -1,3 +1,4 @@
+
 # Multiple-Model Coding (MMC) Scheme
 
 The article is available : [MMC](https://www.researchgate.net/publication/374226674_Multiple-Model_Coding_Scheme_for_Electrical_Signal_Compression)
@@ -39,8 +40,7 @@ are quantized, and the allocation of the rate budget among the two steps is opti
   - (poly-6) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{7}\right)$
   - (poly-7) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{8}\right)$
   - (poly-8) : $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{9}\right)$
- 
-<img src="https://render.githubusercontent.com/render/math?math=%5Cboldsymbol%7B%5Ctheta%7D_%7Bi-1%7D">    
+
 - **Parameter predictive models. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros. $i$: index of current window**
 -   $\boldsymbol{\theta}_{i-1}$
   - (pred para-2) :  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(2\left(\boldsymbol{\theta}_{\left(i\right)}-\boldsymbol{\theta}_{\left(i\right)}\right);\left[-1,1 \right]^{\text{dim}\left(\boldsymbol{\theta}_{n-1}\right)}\right)$
