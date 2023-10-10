@@ -27,7 +27,7 @@ are quantized, and the allocation of the rate budget among the two steps is opti
   - (poly-8) \(\boldsymbol{w}=(2,2,2,2,2,2,2,2,2)\)
     
 
-- **Parameter predictive models. Mean value of \(\boldsymbol{\theta}\) is assume to be nul. \(i\): index of current window** 
+- **Parameter predictive models. Mean value of \(\boldsymbol{\theta}\) is assumed to be zeros. \(i\): index of current window** 
   - (pred para-2) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/2\)
   - (pred para-5) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/5\)
   - (pred para-10) \(\boldsymbol{w}^(i)=\boldsymbol{w}^(i-1)/10\)
