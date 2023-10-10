@@ -7,6 +7,7 @@ Created on Wed Aug  2 10:20:49 2023
 
 import numpy as np
 from collections import Counter
+from subsampling import dynamic_subsample
 
 def entropy(p):
     return -np.sum([p[i]*np.log2(p[i]+10**(-8)) for i in range(len(p))])
@@ -166,7 +167,21 @@ def decode_variable_length(code):
 
 
 
-
+def curve_tex(t,x,threshold):
+    if threshold>0:
+        ind= dynamic_subsample(x,threshold)
+         
+        t_d=t[ind]
+        x_d=x[ind]
+    else :
+        t_d=t
+        x_d=x
+     
+    for k in range(len(x_d)):
+        print("({},{}) ".format(np.round(10000*t_d[k])/10000,np.round(100*x_d[k])/100), end='') 
+    print("ok")    
+    print("ok") 
+    print("nb element={}/{}".format(len(x_d),len(x)))
 
 
         

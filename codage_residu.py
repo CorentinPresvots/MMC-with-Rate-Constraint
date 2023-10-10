@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 #import math
 
 
-from Antonini3 import Antonini_Encoder,Antonini_Decoder
+from Antonini import Antonini_Encoder,Antonini_Decoder
 from Khan_EZW import Khan_Encoder,Khan_Decoder
 #from Quantization import Quantizer
 from Measures import get_snr
@@ -89,7 +89,7 @@ class Residual_Encoder(Antonini_Encoder,Khan_Encoder):
 
     
         ################## Antonini DCT
-        l_best="Antonini_DCT"
+        l_best="DCT+BPC"
         coefs=dct(r/self.N)
         code_best=self.get_code_res_Antonini(coefs,br)
         r_rec_best=idct(self.coefs_rec)/2
@@ -144,7 +144,7 @@ class Residual_Encoder(Antonini_Encoder,Khan_Encoder):
 
         if SNR>SNR_best:
             SNR_best=SNR
-            l_best="Khan_DWT"
+            l_best="DWT+BPC"
             code_best=code
             r_rec_best=r_rec
         
@@ -217,13 +217,13 @@ class Residual_Decoder(Antonini_Decoder,Khan_Decoder):
         """
         
         
-        if l=="Antonini_DCT":
+        if l=="DCT+BPC":
             
             coefs_rec=self.get_coefs_rec_Antonini(code,br)
             r_rec=idct(coefs_rec)/2
             
             return r_rec
-        elif l=="Khan_DWT":
+        elif l=="DWT+BPC":
            
   
             coefs_L=self.get_coefs_rec_Khan(code,br)
