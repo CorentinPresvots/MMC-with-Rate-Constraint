@@ -1,7 +1,8 @@
-# Multiple-Model Coding Scheme
+# Multiple-Model Coding (MMC) Scheme
 
+The article is available : [MMC](https://www.researchgate.net/publication/374226674_Multiple-Model_Coding_Scheme_for_Electrical_Signal_Compression)
 
-This code proposes a low-latency Multiple-Model Coding (MMC) approach to compress sampled electrical signal
+This code proposes a low-latency Multiple-Model Coding approach to compress sampled electrical signal
 waveforms under encoding rate constraints. The approach is window-based. Several parametric waveform models
 are put in competition to obtain a first coarse representation of the signal in each considered window. Then, different
 residual compression techniques are compared to minimize the residual reconstruction error. The model parameters
@@ -28,9 +29,9 @@ are quantized, and the allocation of the rate budget among the two steps is opti
 
 
   
-- **Sample predictive models. Mean value is estimate depending of previous encoded window**
-  - (pred samples-1-0) \(N_p=0\), \(\eta=0\) \(\boldsymbol{w}=(0.1)\)
-  - (pred samples-1-1) \(N_p=0\), \(\eta=1\) \(\boldsymbol{w}=(0.1)\)
+- **Sample predictive models. Mean value $\mathbb{E}\left[\boldsymbol{\theta}\right]=\left(m_1,\dots,m_{N_\text{p}}\right)$ is estimated depending of previous encoded window**
+  - (pred samples-1-0) : $N_p=1$, $\eta=0$,  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
+  - (pred samples-1-1) : $N_p=1$, $\eta=1$,  $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
   - (pred para-2-0) \(N_p=1\), \(\eta=0\) \(\boldsymbol{w}=(0.3,0.3)\)
   - (pred para-2-0) \(N_p=1\), \(\eta=1\) \(\boldsymbol{w}=(0.3,0.3)\)
   - (pred para-3-0) \(N_p=2\), \(\eta=0\) \(\boldsymbol{w}=(0.5,0.5,0.5)\)
