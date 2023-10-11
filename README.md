@@ -63,7 +63,8 @@ Article is available at: [MMC](https://www.researchgate.net/publication/37422667
   - (pred samples-5-1): $N_p=5$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
   - (pred samples-6-0): $N_p=6$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
   - (pred samples-6-1): $N_p=6$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
-              - 
+
+              
 ## Stage 2: The different competing residual compression methods are:
 
 - Antonini's method (DCT+BPC)
