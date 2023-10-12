@@ -480,7 +480,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         
 
 
-        for bx_tot in range(int(btot)): #(25,26): Pour fixer le nombre de bits servant à coder le modèle
+        for bx_tot in range(int(btot/2)): #(25,26): Pour fixer le nombre de bits servant à coder le modèle
 
      
             SNR_model=0
