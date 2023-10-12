@@ -104,6 +104,9 @@ From this binary frame, the decoder reconstructs the signal.
 
 
 - dct, idct from the scipy.fftpack library
+  
 
+- pywt
+  
 
 - fsolve from the scipy.optimize library
