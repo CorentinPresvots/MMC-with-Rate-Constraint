@@ -120,7 +120,7 @@ class Model_Encoder(Model_sin,Model_poly,Model_pred_samples,Allocation_sin,Alloc
          order=len(theta_pred_samples_hat)
        
       
-         al_pred_samples=self.get_allocation_pred_samples(bm,m_theta_pred_samples,w_theta_pred_samples,)
+         al_pred_samples=self.get_allocation_pred_samples(bm,m_theta_pred_samples,w_theta_pred_samples)
          
      
          
@@ -509,7 +509,8 @@ if __name__ == "__main__":
     eta=1
     bm=40
     
-    theta_pred_samples_hat,X=m.get_theta_pred_samples(x_sin_H[2*N:],x_sin_H[0:2*N],N_p,eta)     
+    X=m.get_X(x_sin_H[0:2*N],N_p,eta)
+    theta_pred_samples_hat=m.get_theta_pred_samples(X,x_sin_H[2*N:])     
     print("theta pred samples hat",["{:.2f}".format(theta_pred_samples_hat[i]) for i in range(N_p)])
     #print(np.shape(X))
     # estimation de m_theta_pred_samples

@@ -53,18 +53,17 @@ Article is available at: [MMC](https://www.researchgate.net/publication/37422667
 - **Sample predictive models. Mean value $\mathbb{E}\left[\boldsymbol{\theta}\right]$ is estimated depending of previous encoded window**
   - (pred samples-1-0): $N_p=1$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
   - (pred samples-1-1): $N_p=1$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
-  - (pred samples-2-0): $N_p=2$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.3};\left[-1,1\right]^{2}\right)$
-  - (pred samples-2-1): $N_p=2$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.5};\left[-1,1\right]^{2}\right)$
-  - (pred samples-3-0): $N_p=3$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{3}\right)$
-  - (pred samples-3-1): $N_p=3$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{3}\right)$
-  - (pred samples-4-0): $N_p=4$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
-  - (pred samples-4-1): $N_p=4$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
-  - (pred samples-5-0): $N_p=5$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
-  - (pred samples-5-1): $N_p=5$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
-  - (pred samples-6-0): $N_p=6$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
-  - (pred samples-6-1): $N_p=6$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
-
-              
+  - (pred para-2-0): $N_p=2$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.3};\left[-1,1\right]^{2}\right)$
+  - (pred para-2-1): $N_p=2$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.5};\left[-1,1\right]^{2}\right)$
+  - (pred para-3-0): $N_p=3$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{3}\right)$
+  - (pred para-3-1): $N_p=3$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{3}\right)$
+  - (pred para-4-0): $N_p=4$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
+  - (pred para-4-1): $N_p=4$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
+  - (pred para-5-0): $N_p=5$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
+  - (pred para-5-1): $N_p=5$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
+  - (pred para-6-0): $N_p=6$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
+  - (pred para-6-1): $N_p=6$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
+              - 
 ## Stage 2: The different competing residual compression methods are:
 
 - Antonini's method (DCT+BPC)

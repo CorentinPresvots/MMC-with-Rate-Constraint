@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 import math
-
+import time
 
 
 class Models:
@@ -152,9 +152,11 @@ class Model_pred_samples(Models):
      
 
     def get_m_theta_pred_samples(self,N_p,eta,sigma):
-        yp=np.array([0.75*np.cos(2*np.pi*self.fn*k*(1/self.fs)) for k in range(3*self.N)])+np.random.normal(0,sigma,3*self.N)
         
-        m_theta_pred_samples=self.get_theta_pred_samples(yp[2*self.N:],yp[0:2*self.N],N_p,eta)[0]
+        
+        yp=np.array([0.75*np.cos(2*np.pi*self.fn*k*(1/self.fs)) for k in range(3*self.N)])+np.random.normal(0,sigma,3*self.N)
+        X=self.get_X(yp[0:2*self.N],N_p,eta)
+        m_theta_pred_samples=self.get_theta_pred_samples(X,yp[2*self.N:])
         return m_theta_pred_samples
 
     
@@ -187,24 +189,31 @@ class Model_pred_samples(Models):
         #print(x1_rec[(k-1)*N:k*N])
         return X
 
-    def get_theta_pred_samples(self,y,y_p,N_p,eta):
+    def get_theta_pred_samples(self,X,y):
         
-        
-        X=self.get_X(y_p,N_p,eta)
         
         # Calculer a=(A^T*A)^(-1)A^T*B
-        #hat_alpha = np.linalg.inv(X.T @ X) @ X.T @ y.reshape((self.N,1))
-        
+        #tpsa = time.perf_counter()
+        #hat_alpha = (np.linalg.inv(X.T @ X) @ X.T @ y.reshape((self.N,1)))
+        #hat_alpha=hat_alpha.reshape(np.size(hat_alpha,0))
+        #tpsb = time.perf_counter()
+        #print("time 1",tpsb-tpsa)
         
         #print(np.linalg.inv(X.T @ X) @  X.T  @  X.T[0])
        
-        hat_alpha, residuals, rank, s = np.linalg.lstsq(X, y, rcond=None)
         
-        hat_alpha=hat_alpha.reshape(N_p)
+        #tpsa = time.perf_counter()
+        hat_alpha, residuals, rank, s = np.linalg.lstsq(X, y, rcond=None)
+        hat_alpha=hat_alpha.reshape(np.size(hat_alpha,0))
+        #tpsb = time.perf_counter()
+        #print("time 2",tpsb-tpsa)
+        
+        
+        
         
         #hat_alpha[-1]=1-np.sum(hat_alpha[0:N_p-1])
         #print(hat_alpha.reshape(N_p))
-        return hat_alpha,X
+        return hat_alpha
 
 
 
@@ -291,14 +300,14 @@ if __name__ == "__main__":
     test polynôme d'ordre k
     """
     
-    order=8
+    order=3
  
     theta=np.random.uniform(-1,1,order+1)
   
     model_poly=Model_poly(fn,fs,N,verbose)
     
     
-    x_poly=[0.9, 0.9, 0.9, 0.89, 0.89, 0.88, 0.87, 0.86, 0.84, 0.82, 0.8, 0.78, 0.76, 0.73, 0.7, 0.67, 0.64, 0.61, 0.58, 0.54, 0.51, 0.47, 0.43, 0.39, 0.35, 0.31, 0.27, 0.23, 0.19, 0.14, 0.1, 0.06, 0.01, -0.03, -0.08, -0.12, -0.16, -0.21, -0.25, -0.29, -0.33, -0.37, -0.41, -0.45, -0.49, -0.53, -0.56, -0.6, -0.63, -0.66, -0.69, -0.71, -0.74, -0.76, -0.78, -0.8, -0.82, -0.83, -0.85, -0.86, -0.87, -0.88, -0.89, -0.89, -0.9, -0.9, -0.9, -0.89, -0.89, -0.88, -0.87, -0.86, -0.84, -0.82, -0.8, -0.78, -0.76, -0.73, -0.7, -0.67, -0.64, -0.61, -0.58, -0.54, -0.51, -0.47, -0.43, -0.39, -0.35, -0.31, -0.27, -0.23, -0.19, -0.14, -0.1, -0.06, -0.01, 0.03, 0.08, 0.12, 0.16, 0.21, 0.25, 0.29, 0.33, 0.37, 0.41, 0.45, 0.49, 0.53, 0.56, 0.6, 0.63, 0.66, 0.69, 0.71, 0.74, 0.76, 0.78, 0.8, 0.82, 0.84, 0.85, 0.86, 0.87, 0.88, 0.89, 0.89]#model_poly.get_model_poly(t,*theta)+np.random.normal(0,sigma,N)
+    x_poly=model_poly.get_model_poly(t,*theta)+np.random.normal(0,sigma,N)
     #x_poly[20]=20
     #x_poly[40]=15
     #x_poly[60]=20
@@ -382,11 +391,13 @@ if __name__ == "__main__":
         x_p=model_sin.get_model_sin(t_p,*theta)+model_sin.get_model_sin(t_p,*theta2)+np.random.normal(0,sigma,2*N) 
         x=model_sin.get_model_sin(t,*theta)+model_sin.get_model_sin(t,*theta2)+np.random.normal(0,sigma,N)     
         
-        alpha_hat,X=pred.get_theta_pred_samples(x,x_p, N_p, eta)
+        
+        X=pred.get_X(x_p, N_p, eta)
+        alpha_hat=pred.get_theta_pred_samples(X,x)
         #print(np.sum( alpha_hat))
         #print(alpha_L[i])
         #print(alpha_hat.reshape(N_p))
-        alpha_L[i]=alpha_hat.reshape(N_p)
+        alpha_L[i]=alpha_hat
         
         
         x_rec=pred.get_model_pred_samples(X,*alpha_hat)
@@ -422,7 +433,7 @@ if __name__ == "__main__":
             plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
             plt.show() 
     
-    
+ 
     m_theta_pred_samples=pred.get_m_theta_pred_samples(N_p,eta,sigma)
     #print("m_theta_pred_samples",m_theta_pred_samples)
     for i in range(N_p):     

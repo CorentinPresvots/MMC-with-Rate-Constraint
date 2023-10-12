@@ -30,7 +30,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         
 
         self.family_best_p="none" #previous family used
-        self.theta_tilde_best_p=[] # previous parametric vector
+        self.theta_tilde_best_p=[0] # previous parametric vector
         self.m_best_p="none"
         
         
@@ -124,7 +124,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         Allocation_poly_bx_br.__init__(self,N,fs,False) 
         Allocation_pred_samples_bx_br.__init__(self,N,fs,False) 
         
-        self.nb_test=2 # nombre de test réalisé autour de bx et br théorique déterminé complexité: pour un modèle on test -self.nb_test + bx_opt à self.nb_test + bx_opt
+        self.nb_test=4 # nombre de test réalisé autour de bx et br théorique déterminé complexité: pour un modèle on test -self.nb_test + bx_opt à self.nb_test + bx_opt
 
         
         #self.list_btot=[32,64,96,128,160,192,224,256]
@@ -151,25 +151,27 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         self.nb_max_bit_theta=8 # nombre de bits maximale par coefficient
         self.nb_max_bit_theta_pred=4
         
+    
+        
+        
         self.b_bx_sin=[int(np.ceil(np.log2(3*self.nb_max_bit_theta)))]*self.nb_model_sin
         self.b_bx_poly=[int(np.ceil(np.log2((self.order_model_poly[k]+1)*self.nb_max_bit_theta))) for k in range(self.nb_model_poly)]
-        self.b_bx_pred_samples=[int(np.ceil(np.log2(self.order_model_pred_samples[k]*self.nb_max_bit_theta))) 
-                                    for k in range(self.nb_model_pred_samples)]
-        self.b_bx_pred_para=[int(np.ceil(np.log2(np.max([1,len(self.theta_tilde_best_p)])*self.nb_max_bit_theta_pred))) 
-                                    for k in range(self.nb_model_pred_para)]
+        self.b_bx_pred_samples=[int(np.ceil(np.log2(self.order_model_pred_samples[k]*self.nb_max_bit_theta))) for k in range(self.nb_model_pred_samples)]
+        self.b_bx_pred_para=[0]*(self.nb_model_pred_para)
         
+        #int(np.ceil(np.log2(np.max([1,len(self.theta_tilde_best_p)])*self.nb_max_bit_theta_pred))) 
+        #                            for k in range(self.nb_model_pred_para)]
         
+       
         #self.b_bx_pred_samples=[int(np.ceil(np.log2(np.max([1,(self.order_model_pred_samples[k]-1)*self.nb_max_bit_theta])))) 
         #                            for k in range(self.nb_model_pred_samples)]
         
-        """
-        print("b_bx_sin",  self.b_bx_sin)
-        print("b_bx_poly", self.b_bx_poly)
-        print("b_bx_pred_samples", self.b_bx_pred_samples)
-        print("b_bx_pred_para", self.b_bx_pred_para)
-        """
         
-
+        
+        self.bx_sin_max=[2**self.b_bx_sin[k]-1 for k in range(self.nb_model_sin)]
+        self.bx_poly_max=[2**self.b_bx_poly[k]-1 for k in range(self.nb_model_poly)]
+        self.bx_pred_samples_max=[2**self.b_bx_pred_samples[k]-1 for k in range(self.nb_model_pred_samples)]
+        self.bx_pred_para_max=[0]*self.nb_model_pred_para    
         
         
         
@@ -233,6 +235,20 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         
         self.ini_MMC_enc()
         
+        """
+        print("b_bx_sin",  self.b_bx_sin,"bx_max=",self.bx_sin_max)
+        print("b_bx_poly", self.b_bx_poly,"bx_max=",self.bx_poly_max)
+        print("b_bx_pred_samples", self.b_bx_pred_samples,"bx_max=",self.bx_pred_samples_max)
+        print("b_bx_pred_para", self.b_bx_pred_para,"bx_max=",self.bx_pred_para_max)
+        """
+        
+        
+        
+        
+        
+        
+        
+        
         ##################### normalisation de x
         _,kx_=normalize(x)
 
@@ -255,19 +271,25 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         ##################### détermination de tous les theta_hat modèles pour les modèles conssidérés:  sin, poly 0,...,6
         
 
-        theta_sin_hat=[self.get_theta_sin(x_n) for k in range(self.nb_model_sin)]
+        theta_sin_hat=[self.get_theta_sin(x_n)]*self.nb_model_sin 
         theta_poly_hat=[self.get_theta_poly(x_n,self.order_model_poly[k]) for k in range(self.nb_model_poly)]
 
   
         # model pred samples
         _,kx_p=normalize(x_p[2*self.N:3*self.N])
         x_p_n=x_p*2**(-kx_) 
-        theta_pred_samples_hat=[self.get_theta_pred_samples(x_n,x_p_n[self.N:3*self.N],self.order_model_pred_samples[k],self.eta_model_pred_samples[k])[0] for k in range(self.nb_model_pred_samples)] 
+        X_pred_samples=[self.get_X(x_p_n[self.N:3*self.N],self.order_model_pred_samples[k],self.eta_model_pred_samples[k]) for k in range(self.nb_model_pred_samples)]
+        theta_pred_samples_hat=[self.get_theta_pred_samples(X_pred_samples[k],x_n) for k in range(self.nb_model_pred_samples)] 
+        
+        #m_theta_model_pred_samples=[self.get_m_theta_pred_samples(self.order_model_pred_samples[k],self.eta_model_pred_samples[k],0) for k in range(self.nb_model_pred_samples)] 
+        #"""
         if self.family_best_p!="pred samples":
             m_theta_model_pred_samples=[self.get_m_theta_pred_samples(self.order_model_pred_samples[k],self.eta_model_pred_samples[k],0) for k in range(self.nb_model_pred_samples)] 
-        else :   
-            m_theta_model_pred_samples=[self.get_theta_pred_samples(x_p_n[2*self.N:3*self.N],x_p_n[0:2*self.N],self.order_model_pred_samples[k],self.eta_model_pred_samples[k])[0] for k in range(self.nb_model_pred_samples)] 
         
+        else :   
+            X_pred_samples2=[self.get_X(x_p_n[0:2*self.N],self.order_model_pred_samples[k],self.eta_model_pred_samples[k]) for k in range(self.nb_model_pred_samples)]
+            m_theta_model_pred_samples=[self.get_theta_pred_samples(X_pred_samples2[k],x_p_n[2*self.N:3*self.N])for k in range(self.nb_model_pred_samples)] 
+        #"""
 
         
         
@@ -276,8 +298,8 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         m_theta_pred_para=[]
         w_theta_pred_para=[]
         if self.family_best_p=="sin":
-            theta_pred_para_hat=[self.get_theta_sin(x_n) for k in range(self.nb_model_pred_para)]
-            m_theta_pred_para=[self.theta_tilde_best_p for k in range(self.nb_model_pred_para)]
+            theta_pred_para_hat=[theta_sin_hat[0]]*self.nb_model_pred_para#[self.get_theta_sin(x_n) for k in range(self.nb_model_pred_para)]
+            m_theta_pred_para=[self.theta_tilde_best_p]*self.nb_model_pred_para# for k in range(self.nb_model_pred_para)]
             
 
             w_theta_sin_p=self.Model_used[self.family_best_p][self.m_best_p][1]
@@ -288,24 +310,27 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         elif self.family_best_p=="pred samples":
             order=self.Model_used[self.family_best_p][self.m_best_p][0]
             eta=self.Model_used[self.family_best_p][self.m_best_p][1]
-
-            theta_pred_para_hat=[self.get_theta_pred_samples(x_n,x_p_n[self.N:3*self.N],order,eta)[0] for k in range(self.nb_model_pred_para)] 
             
-            m_theta_pred_para=[self.theta_tilde_best_p for k in range(self.nb_model_pred_para)]
+            
+            X_pred_para=self.get_X(x_p_n[self.N:3*self.N],order,eta)
+            
+            
+            theta_pred_para_hat=[self.get_theta_pred_samples(X_pred_para,x_n)]*(self.nb_model_pred_para)
+            
+            m_theta_pred_para=[self.theta_tilde_best_p]*self.nb_model_pred_para
            
-            X_pred_para=[self.get_X(x_p_n[self.N:3*self.N],order,eta) for k in range(self.nb_model_pred_para)]
-            
+
             w_theta_pred_samples_p=self.Model_used[self.family_best_p][self.m_best_p][2]
             w_theta_pred_para=[[w_theta_pred_samples_p[i]/self.factor_model_pred_para[k] for i in range(order)] for k in range(self.nb_model_pred_para)]
         elif self.family_best_p=="poly":
             order=self.Model_used[self.family_best_p][self.m_best_p][0]
-            theta_pred_para_hat=[self.get_theta_poly(x_n,order) for k in range(self.nb_model_pred_para)]
-            m_theta_pred_para=[self.theta_tilde_best_p for k in range(self.nb_model_pred_para)]
+            theta_pred_para_hat=[self.get_theta_poly(x_n,order)]* self.nb_model_pred_para
+            m_theta_pred_para=[self.theta_tilde_best_p]*self.nb_model_pred_para
             
             w_theta_poly_p=self.Model_used[self.family_best_p][self.m_best_p][1]
             w_theta_pred_para=[[w_theta_poly_p[i]/self.factor_model_pred_para[k] for i in range(order+1)] for k in range(self.nb_model_pred_para)]
        
-       
+        #print("self.theta_tilde_best_p",self.theta_tilde_best_p)
         """
         t2=np.linspace(0,(3*self.N-1)*(1/self.fs),3*self.N)
         plt.figure(figsize=(8,4), dpi=100)
@@ -333,7 +358,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         
         x_poly_hat=[self.get_model_poly(self.t,*theta_poly_hat[k]) for k in range(self.nb_model_poly)]
         
-        X_pred_samples=[self.get_X(x_p_n[self.N:3*self.N],self.order_model_pred_samples[k],self.eta_model_pred_samples[k]) for k in range(self.nb_model_pred_samples)]
+        
         x_pred_samples_hat=[self.get_model_pred_samples(X_pred_samples[k],*theta_pred_samples_hat[k]) for k in range(self.nb_model_pred_samples)]
         
         
@@ -343,7 +368,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         elif self.family_best_p=="poly":
             x_pred_para_hat=[self.get_model_poly(self.t,*theta_pred_para_hat[k]) for k in range(self.nb_model_pred_para)]
         elif self.family_best_p=="pred samples":
-            x_pred_para_hat=[self.get_model_pred_samples(X_pred_para[k],*theta_pred_para_hat[k]) for k in range(self.nb_model_pred_para)]
+            x_pred_para_hat=[self.get_model_pred_samples(X_pred_para,*theta_pred_para_hat[k]) for k in range(self.nb_model_pred_para)]
             
 
         
@@ -454,105 +479,120 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         #SNR_L=[]
         
 
-                  
-        
-        for bx_tot in range(btot): #(25,26): Pour fixer le nombre de bits servant à coder le modèle
+
+        for bx_tot in range(int(btot)): #(25,26): Pour fixer le nombre de bits servant à coder le modèle
+
+     
             SNR_model=0
             to_do_second_stage=0 
-
             ### TESTs Pred samples
-            
-            for k in range(self.nb_model_pred_samples):
-                bx_test=bx_tot-0*self.b_kx-self.b_kr-self.b_bx_pred_samples[k]
-                #print(bx_test,0*self.b_kx-self.b_kr-self.b_bx_pred_samples[k])
-                #  and bx_pred_samples_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_samples_hat[k]+self.nb_test
-                if  bx_test>=0 and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_pred_samples[k]-1 and kx_==kx_p:
-                    #print("bx_pred_samples_hat[k]+-self.nb_test",bx_pred_samples_hat[k]-self.nb_test,bx_test,bx_pred_samples_hat[k]+self.nb_test)
-                 
-                    theta_pred_samples_tilde_test,code_theta_pred_samples_tilde_test=self.get_theta_pred_samples_tilde(theta_pred_samples_hat[k],bx_test,m_theta_model_pred_samples[k],self.w_theta_model_pred_samples[k])
-                    x_pred_samples_tilde_test=self.get_model_pred_samples(X_pred_samples[k],*theta_pred_samples_tilde_test) 
-                    SNR_model_test=get_snr(x_n,x_pred_samples_tilde_test)
-                    #print("pred_samples SNR={:.2f} ,SNR={:.2f}  dB".format(SNR_model_test,SNR_model),bx_tot)
-                    if SNR_model_test>SNR_model:
-                        family_best="pred samples"
-                        m=self.name_model_pred_samples[k]
-                        b_bx=self.b_bx_pred_samples[k]
-                        bx=bx_test
-                        #print("bx",bx,m)
-                        theta_hat=theta_pred_samples_hat[k]
-                        theta_tilde=theta_pred_samples_tilde_test
-                        
-                        code_theta_tilde=code_theta_pred_samples_tilde_test
-                        
-                        x_model=x_pred_samples_tilde_test
-                        
-                        SNR_model=SNR_model_test
-                        
-                        #print("SNR_pred_{}={:.2f} dB".format(k,SNR_model,))
-                        b_kr=self.b_kr
-                        
-                        b_kx=0
-                        kx=0
-                        
-                        
-                        to_do_second_stage=1               
+            if kx_==kx_p:
+                for k in range(self.nb_model_pred_samples):
+                    #if get_snr(x_n,x_pred_samples_hat[k])>SNR_model:
         
-
-            ### TESTs Pred para
-            for k in range(self.nb_model_pred_para):
-                bx_test=bx_tot-0*self.b_kx-self.b_kr-self.b_bx_pred_para[k]
-                # and  bx_pred_para_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_para_hat[k]+self.nb_test and
-                if bx_test>=0 and  bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_pred_para[k]-1 and kx_==kx_p:
-                
-                   
-                    SNR_model_test=0
-                    if self.family_best_p=="sin":
-                        theta_pred_para_tilde_test,code_theta_pred_para_tilde_test=self.get_theta_sin_tilde(theta_pred_para_hat[k],bx_test,m_theta_pred_para[k],w_theta_pred_para[k])
-                        #print("theta_sin_tilde_test",theta_sin_tilde_test)
-                        x_pred_para_tilde_test=self.get_model_sin(self.t,*theta_pred_para_tilde_test) 
-                        SNR_model_test=get_snr(x_n,x_pred_para_tilde_test)
+                    bx_test=bx_tot-0*self.b_kx-self.b_kr-self.b_bx_pred_samples[k]
+                    #print(bx_test,0*self.b_kx-self.b_kr-self.b_bx_pred_samples[k])
+                    #  and  
+                    if bx_test>=0 and bx_pred_samples_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_samples_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_pred_samples[k]-1:
+                        #print("bx_pred_samples_hat[k]+-self.nb_test",bx_pred_samples_hat[k]-self.nb_test,bx_test,bx_pred_samples_hat[k]+self.nb_test)
+                     
+                        theta_pred_samples_tilde_test,code_theta_pred_samples_tilde_test=self.get_theta_pred_samples_tilde(theta_pred_samples_hat[k],bx_test,m_theta_model_pred_samples[k],self.w_theta_model_pred_samples[k])
+                        x_pred_samples_tilde_test=self.get_model_pred_samples(X_pred_samples[k],*theta_pred_samples_tilde_test) 
+                        SNR_model_test=get_snr(x_n,x_pred_samples_tilde_test)
+                        #print("pred_samples SNR={:.2f} ,SNR={:.2f}  dB".format(SNR_model_test,SNR_model),bx_tot)
+                        if SNR_model_test>SNR_model:
+                            family_best="pred samples"
+                            m=self.name_model_pred_samples[k]
+                            b_bx=self.b_bx_pred_samples[k]
+                            bx=bx_test
+                            #print("bx",bx,m)
+                            theta_hat=theta_pred_samples_hat[k]
+                            theta_tilde=theta_pred_samples_tilde_test
+                            
+                            code_theta_tilde=code_theta_pred_samples_tilde_test
+                            
+                            x_model=x_pred_samples_tilde_test
+                            
+                            SNR_model=SNR_model_test
+                            
+                            #print("SNR_pred_{}={:.2f} dB".format(k,SNR_model,))
+                            b_kr=self.b_kr
+                            
+                            b_kx=0
+                            kx=0
+                            
+                            to_do_second_stage=1               
+        
+    
+                ### TESTs Pred para
+                for k in range(self.nb_model_pred_para):
+                    #if get_snr(x_n,x_pred_para_hat[k])>SNR_model:
+                        
+                        
+                    bx_test=bx_tot-0*self.b_kx-self.b_kr-self.b_bx_pred_para[k]
+                    # 
+                    if bx_test>=0 and bx_pred_para_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_para_hat[k]+self.nb_test and  bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_pred_para[k]-1:
                     
-                    elif self.family_best_p=="pred samples":
-                 
-                        theta_pred_para_tilde_test,code_theta_pred_para_tilde_test=self.get_theta_pred_samples_tilde(theta_pred_para_hat[k],bx_test,m_theta_pred_para[k],w_theta_pred_para[k])
-                        
-                        
                        
-                        x_pred_para_tilde_test=self.get_model_pred_samples(X_pred_para[k],*theta_pred_para_tilde_test) 
-                        SNR_model_test=get_snr(x_n,x_pred_para_tilde_test)
-                        #print("SNR_model_test",SNR_model_test)
-                    elif self.family_best_p=="poly":
-                        #print("theta_pred_para_hat[k]",theta_pred_para_hat[k])
-                        theta_pred_para_tilde_test,code_theta_pred_para_tilde_test=self.get_theta_poly_tilde(theta_pred_para_hat[k],bx_test,m_theta_pred_para[k],w_theta_pred_para[k])
-                        x_pred_para_tilde_test=self.get_model_poly(self.t,*theta_pred_para_tilde_test) 
-                        SNR_model_test=get_snr(x_n,x_pred_para_tilde_test)
+                        SNR_model_test=0
+                        if self.family_best_p=="sin":
+                            theta_pred_para_tilde_test,code_theta_pred_para_tilde_test=self.get_theta_sin_tilde(theta_pred_para_hat[k],bx_test,m_theta_pred_para[k],w_theta_pred_para[k])
+                            """
+                            print("bx_test",bx_test)
+                            print("m_theta_hat",m_theta_pred_para[k])
+                            print("theta_hat",theta_pred_para_hat[k])
+                            print("theta_sin_tilde_test",theta_pred_para_tilde_test)
+                            print("e",[theta_pred_para_hat[k][i]-m_theta_pred_para[k][i] for i in range(3)])
+                            print("w",w_theta_pred_para[k])
+                            """
+                            x_pred_para_tilde_test=self.get_model_sin(self.t,*theta_pred_para_tilde_test) 
+                            SNR_model_test=get_snr(x_n,x_pred_para_tilde_test)
                         
-
-
-                    #print("pred_para SNR={} ,SNR={}  dB".format(SNR_model_test,SNR_model),bx_tot,bx_test,self.name_model_pred_para[k])
-                    if SNR_model_test>SNR_model:
-                        family_best="pred para"
-                        m=self.name_model_pred_para[k]
-                        b_bx=self.b_bx_pred_para[k]
-                        bx=bx_test
-                        #print("bx",bx,m)
-                        theta_hat=theta_pred_para_hat[k]
-                        theta_tilde=theta_pred_para_tilde_test
-                        
-                        code_theta_tilde=code_theta_pred_para_tilde_test
-                        
-                        x_model=x_pred_para_tilde_test
-                        
-                        SNR_model=SNR_model_test
-                        #print("SNR_pred_{}={:.2f} dB".format(k,SNR_model,))
-                        b_kr=self.b_kr
-                        
-                        b_kx=0
-                        kx=0
-                      
-                        
-                        #theta_tilde_p=[]
-                        to_do_second_stage=1   
+                        elif self.family_best_p=="pred samples":
+                            #print("m_theta_pred_para[k]",m_theta_pred_para[k])
+                            #print("theta_pred_para_hat[k]",theta_pred_para_hat[k])
+                            theta_pred_para_tilde_test,code_theta_pred_para_tilde_test=self.get_theta_pred_samples_tilde(theta_pred_para_hat[k],bx_test,m_theta_pred_para[k],w_theta_pred_para[k])
+                            
+                            
+                           
+                            x_pred_para_tilde_test=self.get_model_pred_samples(X_pred_para,*theta_pred_para_tilde_test) 
+                            SNR_model_test=get_snr(x_n,x_pred_para_tilde_test)
+                            #print("SNR_model_test",SNR_model_test)
+                        elif self.family_best_p=="poly":
+                            #print("theta_pred_para_hat[k]",theta_pred_para_hat[k])
+                            theta_pred_para_tilde_test,code_theta_pred_para_tilde_test=self.get_theta_poly_tilde(theta_pred_para_hat[k],bx_test,m_theta_pred_para[k],w_theta_pred_para[k])
+                            x_pred_para_tilde_test=self.get_model_poly(self.t,*theta_pred_para_tilde_test) 
+                            SNR_model_test=get_snr(x_n,x_pred_para_tilde_test)
+                            
+                        """
+                        mm=self.name_model_pred_para[k]
+                        S=np.round(100000* SNR_model_test)/100000
+                        print(f"m={mm:15}, bx tot={bx_tot:3}, bx={bx_test:3}, SNR={S:7}  dB")
+                        """
+                        if SNR_model_test>SNR_model:
+                            
+                            family_best="pred para"
+                            m=self.name_model_pred_para[k]
+                            b_bx=self.b_bx_pred_para[k]
+                            bx=bx_test
+                            #print("bx",bx,m)
+                            theta_hat=theta_pred_para_hat[k]
+                            theta_tilde=theta_pred_para_tilde_test
+                            
+                            code_theta_tilde=code_theta_pred_para_tilde_test
+                            
+                            x_model=x_pred_para_tilde_test
+                            
+                            SNR_model=SNR_model_test
+                            #print("SNR_pred_{}={:.2f} dB".format(k,SNR_model,))
+                            b_kr=self.b_kr
+                            
+                            b_kx=0
+                            kx=0
+                          
+                            
+                            #theta_tilde_p=[]
+                            to_do_second_stage=1   
 
 
 
@@ -565,10 +605,12 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                         
             # test sin
             for k in range(self.nb_model_sin):   
+       
+                #if get_snr(x_n,x_sin_hat[k])>SNR_model:
                 bx_test=bx_tot-self.b_kx-self.b_kr-self.b_bx_sin[k]
              
                 #print("bx_test sin",bx_test)
-                if bx_test>=0 and bx_sin_hat[k]-self.nb_test<=bx_test and bx_test<= bx_sin_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_sin[k]-1:
+                if bx_test>=0 and bx_sin_hat[k]-self.nb_test<=bx_test and bx_test<= bx_sin_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_sin[k]-1:
     
                     theta_sin_tilde_test,code_theta_sin_tilde_test=self.get_theta_sin_tilde(theta_sin_hat[k],bx_test,self.m_theta_model_sin[k],self.w_theta_model_sin[k])
                     #print("theta_sin_tilde_test",theta_sin_tilde_test)
@@ -602,9 +644,11 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
               
             ### TESTs POLY
             for k in range(self.nb_model_poly):
+                #if get_snr(x_n,x_poly_hat[k])>SNR_model:
+                    
                 bx_test=bx_tot-self.b_kx-self.b_kr-self.b_bx_poly[k]
                 #print("bx_test poly",bx_test)
-                if  bx_test>=0 and bx_poly_hat[k]-self.nb_test<=bx_test and bx_test<=bx_poly_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_poly[k]-1:
+                if  bx_test>=0 and bx_poly_hat[k]-self.nb_test<=bx_test and bx_test<=bx_poly_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_poly[k]-1:
                     #print("theta_poly_hat[k]",theta_poly_hat[k])
                     #print("[0]*self.order_model_poly[k],self.w_theta_model_poly[k]",[0]*(self.order_model_poly[k]+1),self.w_theta_model_poly[k])
                     theta_poly_tilde_test,code_theta_poly_tilde_test=self.get_theta_poly_tilde(theta_poly_hat[k],bx_test,[0]*(self.order_model_poly[k]+1),self.w_theta_model_poly[k])
@@ -638,12 +682,13 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
             
             
             #Test None model
-            bx_test=bx_tot-0*self.b_kx-0*self.b_kr
+            bx_test=bx_tot-self.b_kx-0*self.b_kr
             if bx_test==0:
                 x_model_test=np.zeros(self.N)
                 SNR_model_test=get_snr(x_n,x_model_test)  
-                
-                if  SNR_model_test>SNR_model:
+                #print("SNR_model_test",SNR_model_test)
+                #print("SNR_model",SNR_model)
+                if  SNR_model_test>=SNR_model:
                     family_best="none"
                     m='none'
                     
@@ -656,7 +701,8 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     
                     code_theta_tilde=[]
                     
-                    x_model=x_poly_tilde_test
+                    x_model=x_model_test
+                    SNR_model=SNR_model_test
                     
                     b_kr=0
                     b_kx=self.b_kx
@@ -723,7 +769,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     self.theta_hat_best=theta_hat
                     self.theta_tilde_best=theta_tilde
                     
-                    #print("max enc",np.max(x_model),"kx",kx,"kx_",kx_,"kx_p",kx_p)
+                    #print(self.m_best,"max enc",np.max(x_model),"kx",kx,"kx_",kx_,"kx_p",kx_p)
                     self.x_model_best=x_model*2**kx_
                     self.x_residual_best=x_residual*2**(kx_+kr)
                    
@@ -732,11 +778,21 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     self.family_best=family_best
         
              
-        if self.family_best!="pred para":
+        if self.family_best!="pred para" and self.family_best!="none":
             self.family_best_p=self.family_best
             self.m_best_p=self.m_best
+            self.b_bx_pred_para=[int(np.ceil(np.log2(len(self.theta_tilde_best_p)*self.nb_max_bit_theta_pred))) 
+                                        for k in range(self.nb_model_pred_para)]
+          
+            self.bx_pred_para_max=[2**self.b_bx_pred_para[k]-1 for k in range(self.nb_model_pred_para)]
+             
+        if self.family_best!="none":   
             self.theta_tilde_best_p=self.theta_tilde_best
-                    
+        
+
+        #print("self.bx_pred_para_max enc",self.bx_pred_para_max)
+                                
+                                 
         code_m=my_bin(self.label_model[self.m_best],self.bm)        
         #print("code_m",code_m)
               
@@ -779,6 +835,8 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
         plt.show()  
         """
+
+        
         return code
 
 
@@ -789,11 +847,8 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         
    
         self.family_dec_p="none" #previous family used
-        self.theta_tilde_dec_p=[] # previous parametric vector
+        self.theta_tilde_dec_p=[0] # previous parametric vector
         self.m_dec_p="none"
-        
-        
-        
         
         
         
@@ -896,20 +951,30 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         
         
         # nombr de bits max pour coder chaque modèle
-        self.nb_max_bit_theta=8 # nombre de bits maximale par coefficient
+        self.nb_max_bit_theta=8 # nombre de bits max par coefficient
         self.nb_max_bit_theta_pred=4
+        
+
+
         
         self.b_bx_sin=[int(np.ceil(np.log2(3*self.nb_max_bit_theta)))]*self.nb_model_sin
         self.b_bx_poly=[int(np.ceil(np.log2((self.order_model_poly[k]+1)*self.nb_max_bit_theta))) for k in range(self.nb_model_poly)]
-        self.b_bx_pred_samples=[int(np.ceil(np.log2(self.order_model_pred_samples[k]*self.nb_max_bit_theta))) 
-                                    for k in range(self.nb_model_pred_samples)]
+        self.b_bx_pred_samples=[int(np.ceil(np.log2(self.order_model_pred_samples[k]*self.nb_max_bit_theta))) for k in range(self.nb_model_pred_samples)]
+        self.b_bx_pred_para=[0]*self.nb_model_pred_para
         
-        self.b_bx_pred_para=[int(np.ceil(np.log2(np.max([1,len(self.theta_tilde_dec_p)])*self.nb_max_bit_theta_pred))) 
-                                    for k in range(self.nb_model_pred_para)]
-        #self.b_bx_pred_samples=[int(np.ceil(np.log2(np.max([1,(self.order_model_pred_samples[k]-1)*self.nb_max_bit_theta])))) 
-        #                            for k in range(self.nb_model_pred_samples)]
+    
         
         self.b_bx=[0]+ self.b_bx_sin+self.b_bx_poly+self.b_bx_pred_samples+self.b_bx_pred_para
+        
+        
+        
+        self.bx_sin_max=[2**self.b_bx_sin[k]-1 for k in range(self.nb_model_sin)]
+        self.bx_poly_max=[2**self.b_bx_poly[k]-1 for k in range(self.nb_model_poly)]
+        self.bx_pred_samples_max=[2**self.b_bx_pred_samples[k]-1 for k in range(self.nb_model_pred_samples)]
+        self.bx_pred_para_max=[0]*self.nb_model_pred_para        
+        
+        
+        
         """
         print("b_bx_sin",  self.b_bx_sin)
         print("b_bx_poly", self.b_bx_poly)
@@ -1036,12 +1101,17 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
             order_pred_samples=self.Model_used[self.family_dec][self.m_dec][0]
             eta_pred_samples=self.Model_used[self.family_dec][self.m_dec][1]
             X=self.get_X(x_p[self.N:3*self.N]*2**(-self.kx_dec),order_pred_samples,eta_pred_samples)
-
+            
+            #m_theta_pred_samples=self.get_m_theta_pred_samples(order_pred_samples,eta_pred_samples,0)
+        
+            #"""
             if self.family_dec_p!="pred samples":
                 m_theta_pred_samples=self.get_m_theta_pred_samples(order_pred_samples,eta_pred_samples,0)
-            else :   
-                m_theta_pred_samples=self.get_theta_pred_samples(x_p[2*self.N:3*self.N]*2**(-self.kx_dec), x_p[0:2*self.N]*2**(-self.kx_dec), order_pred_samples, eta_pred_samples)[0]
             
+            else :   
+                X_pred_samples2=self.get_X(x_p[0:2*self.N]*2**(-self.kx_dec),order_pred_samples, eta_pred_samples) 
+                m_theta_pred_samples=self.get_theta_pred_samples(X_pred_samples2,x_p[2*self.N:3*self.N]*2**(-self.kx_dec))
+            #"""
             w_theta_pred_samples=self.Model_used[self.family_dec][self.m_dec][2]
             self.theta_tilde_dec=self.get_theta_pred_samples_tilde(code[ptr:ptr+self.bx_dec],self.bx_dec,m_theta_pred_samples,w_theta_pred_samples)
             self.x_model_dec=self.get_model_pred_samples(X,*self.theta_tilde_dec)*2**self.kx_dec
@@ -1082,15 +1152,25 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         ptr+=self.bx_dec 
         
         
-        if self.family_dec!="pred para":   
+        if self.family_dec!="pred para" and self.family_dec!="none":  
             self.family_dec_p=self.family_dec#previous family used
-            self.theta_tilde_dec_p=self.theta_tilde_dec # previous parametric vector
+           
             self.m_dec_p=self.m_dec
             
-                
 
+            
+            self.b_bx_pred_para=[int(np.ceil(np.log2(len(self.theta_tilde_dec_p)*self.nb_max_bit_theta_pred))) 
+                                        for k in range(self.nb_model_pred_para)]
+            
+            
+            self.bx_pred_para_max=[2**self.b_bx_pred_para[k]-1
+                                        for k in range(self.nb_model_pred_para)]
+            
+            self.b_bx=[0]+ self.b_bx_sin+self.b_bx_poly+self.b_bx_pred_samples+self.b_bx_pred_para    
         
-        
+        if self.family_dec!="none": 
+            self.theta_tilde_dec_p=self.theta_tilde_dec # previous parametric vector
+        #print("self.bx_pred_para_max dec",self.bx_pred_para_max)
         
         if self.m_dec!="none":
             self.b_kr_dec=self.b_kr
@@ -1128,6 +1208,4 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
                 
         return  self.x_rec_dec
             
-        
-        
         

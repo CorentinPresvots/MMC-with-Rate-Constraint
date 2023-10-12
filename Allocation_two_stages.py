@@ -314,7 +314,7 @@ if __name__ == "__main__":
     
     btot=128 # nombre de bits servant à coder toute le signal
     nb_sign=40 # nombre signaux testés, servant à trouver des valeurs moyennes
-    sigma=0.01 # bruit ajouté aux signaux de test
+    sigma=0.001 # bruit ajouté aux signaux de test
     
     
     
@@ -392,21 +392,21 @@ if __name__ == "__main__":
     w_theta_sin=[0.5,0.2,2*np.pi]
     
     
-    fact=20
+    fact=10
     m_theta_sin2=[m_theta_sin[0]/fact,3*fn,0]
     w_theta_sin2=[w_theta_sin[0]/fact,w_theta_sin[1]/fact,w_theta_sin[2]/fact]
     
     
     
-    t_pred_samples=np.linspace(0,(3*N-1)/fs,3*N)
+    t_pred_samples=np.linspace(0,(4*N-1)/fs,4*N)
     
     
 
-    yp=np.array([np.cos(2*np.pi*m_theta_sin[1]*k*(1/fs)) for k in range(3*N)]) 
-    m_theta_pred_samples=m.get_m_theta_pred_samples(N_p,eta,0)
-    w_theta_pred_samples=[1]*N_p    
+    #yp=np.array([np.cos(2*np.pi*m_theta_sin[1]*k*(1/fs)) for k in range(3*N)]) 
+    #m_theta_pred_samples=m.get_m_theta_pred_samples(N_p,eta,0)
+    #w_theta_pred_samples=[1]*N_p    
     
-    print("m_theta_pred_samples", [np.round(1000*m_theta_pred_samples[k])/1000 for k in range(N_p)])
+    #print("m_theta_pred_samples", [np.round(1000*m_theta_pred_samples[k])/1000 for k in range(N_p)])
     for sign in range(nb_sign):
     
         """
@@ -430,11 +430,20 @@ if __name__ == "__main__":
 
 
     
-        x_sin_H=m.get_model_sin(t_pred_samples,*theta_sin)+m.get_model_sin(t_pred_samples,*theta_sin2)+np.random.normal(0,sigma,3*N) 
+        x_sin_H=m.get_model_sin(t_pred_samples,*theta_sin)+m.get_model_sin(t_pred_samples,*theta_sin2)+np.random.normal(0,sigma,4*N) 
     
     
-        x_test=x_sin_H[2*N:]
-        x_test_pre=x_sin_H[0:2*N]
+        x_test=x_sin_H[3*N:4*N]
+        x_test_pre=x_sin_H[N:3*N]
+        
+        
+        X_pred=m.get_X(x_sin_H[0:2*N],N_p,eta)
+        m_theta_pred_samples=m.get_theta_pred_samples(X_pred,x_sin_H[2*N:3*N]) 
+        w_theta_pred_samples=[1.5]*N_p
+        
+           
+    
+       
         
         """
         plt.figure(figsize=(8,4), dpi=100)
@@ -456,8 +465,9 @@ if __name__ == "__main__":
         """
         estimation des paramètres
         """
-        theta_pred_samples_hat,X=m.get_theta_pred_samples(x_test,x_test_pre,N_p,eta) # estimation des paramètres polynomiaux
-        #print("theta pred_samples hat: {:.2f},{:.2f}".format(*theta_pred_samples_hat))
+        X=m.get_X(x_test_pre,N_p,eta)
+        theta_pred_samples_hat=m.get_theta_pred_samples(X,x_test) # estimation des paramètres polynomiaux
+       
         x_pred_samples_hat=m.get_model_pred_samples(X,*theta_pred_samples_hat) # modèle déterminé
 
         emp_real=x_test-x_pred_samples_hat # erreur entre le signal et le modèle
@@ -537,10 +547,10 @@ if __name__ == "__main__":
             #if bx_test<=10:
             #print("bx={}".format(bx_test),"br={}".format(len(code)),"btot={}".format(bx_test+len(code)),"SNR_x={:.2f}".format(get_snr(x_test,x_poly_tilde)),"SNR_r={:.2f}".format(get_snr(r,r_rec)),"SNR_tot={:.2f}".format(get_snr(x_test,x_poly_rec)))
             
-            if bx_test in [10] and sign==0:
+            if bx_test in [5,10] and sign==0:
                 #print(bx_test)
           
-               
+                print("m_theta_pred_samples",[np.round(1000*m_theta_pred_samples[k])/1000 for k in range(N_p)])#m_theta_pred_samples) 
                 print("theta_pred_samples_hat",[np.round(1000*theta_pred_samples_hat[k])/1000 for k in range(N_p)])
                 print("theta_pred_samples_tilde",[np.round(1000*theta_pred_samples_tilde[k])/1000 for k in range(N_p)])
                 print("bx={} bits, SNR_hat={:.2f}, SNR_tilde={:.2f}".format(bx_test,get_snr(x_test,x_pred_samples_hat),get_snr(x_test,x_pred_samples_tilde)))
@@ -586,15 +596,16 @@ if __name__ == "__main__":
                 plt.show()
                 """
         
-
+    min_=10
+    bx=[i for i in range(min_,btot)]
 
     SEeqmp_real_m=[np.mean(SEeqmp_real[:,k]) for k in range(btot)]
     SEeqmp_theo_m=[np.mean(SEeqmp_theo[:,k]) for k in range(btot)]
     
 
     plt.figure(figsize=(8,4), dpi=100)
-    plt.plot(np.log(SEeqmp_real_m),lw=2,label='SEeqmp real')
-    plt.plot(np.log(SEeqmp_theo_m),lw=2,label='SEeqmp theoritical')
+    plt.plot(bx,np.log(SEeqmp_real_m[min_:]),lw=2,label='SEeqmp real')
+    plt.plot(bx,np.log(SEeqmp_theo_m[min_:]),lw=2,label='SEeqmp theoritical')
     plt.xlabel('bx')
     plt.ylabel('Magnitude')
     plt.title('log(eqmp real mean) and log(eqmp theo mean) with pred samples of order {}'.format(N_p))
@@ -610,8 +621,8 @@ if __name__ == "__main__":
     
 
     plt.figure(figsize=(8,4), dpi=100)
-    plt.plot(np.log(SEe_real_m),lw=2,label='SEe real, bx opt={}'.format(SEe_real_m.index(min(SEe_real_m))))
-    plt.plot(np.log(SEe_theo_m),lw=2,label='SEe theoritical, bx min={}'.format(SEe_theo_m.index(min(SEe_theo_m))))
+    plt.plot(bx,np.log(SEe_real_m[min_:]),lw=2,label='SEe real, bx opt={}'.format(SEe_real_m.index(min(SEe_real_m))))
+    plt.plot(bx,np.log(SEe_theo_m[min_:]),lw=2,label='SEe theoritical, bx min={}'.format(SEe_theo_m.index(min(SEe_theo_m))))
     plt.xlabel('bx')
     plt.ylabel('Magnitude')
     plt.title('log(e real mean) and log(e theo mean) with pred samples of order {}'.format(N_p))
@@ -622,7 +633,7 @@ if __name__ == "__main__":
     plt.show()    
        
     plt.figure(figsize=(8,4), dpi=100)
-    plt.plot(np.log(SEe_real_m),lw=2,label='SEe real, bx opt={}'.format(SEe_real_m.index(min(SEe_real_m))))
+    plt.plot(bx,np.log(SEe_real_m[min_:]),lw=2,label='SEe real, bx opt={}'.format(SEe_real_m.index(min(SEe_real_m))))
     plt.xlabel('bx')
     plt.ylabel('Magnitude')
     plt.title('log(e real mean) with pred samples of order {}'.format(N_p))

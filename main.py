@@ -81,14 +81,15 @@ Model_used = {
 
 
 # Sinusoidals family
+
 m_theta_sin1=[0.75,fn,0]
 w_theta_sin1=[0.5,0.2,2*np.pi]
 Model_used["sin"]["sin-1"]=[m_theta_sin1,w_theta_sin1]
 
+
 m_theta_sin2=[0.75,fn,0]
 w_theta_sin2=[0.5,0.05,2*np.pi]
 Model_used["sin"]["sin-2"]=[m_theta_sin2,w_theta_sin2]
-
 
 
 
@@ -204,6 +205,9 @@ for w in range(0,nb_w):
     ##### coder
     code=MMC_coder.MMC_enc(x,x_p,btot)
     
+    
+    
+    
     ##### decoder
     x_rec[w*N:(w+1)*N]=MMC_decoder.MMC_dec(code,x_p,btot)
     
@@ -227,7 +231,7 @@ for w in range(0,nb_w):
 
  
      
-    print(f"window={w+1:3}, SNR={SNR_:4.1f} dB, SNR_m={SNR_m_:4.1f} dB, SNR_r={SNR_r_:4.1f} dB, b_used/btot={b_used:3}/{btot:3}, m={m:14}, l={l:7}, bh=b_kx+b_kr+bm+bl+b_bx={b_kx:1}+{b_kr:1}+{bm:1}+{bl:1}+{b_bx:1}={bh:2} b, bx={bx:3} b, br={br:3} b, kx={kx:1}, kr={kr:2}")
+    print(f"window={w+1:3}, SNRenc={SNR_:5.2f} dB, SNRdec={SNRdec:2.2f} dB, SNR_m={SNR_m_:4.1f} dB, SNR_r={SNR_r_:4.1f} dB, b_used/btot={b_used:3}/{btot:3}, m={m:14}, l={l:7}, bh=b_kx+b_kr+bm+bl+b_bx={b_kx:1}+{b_kr:1}+{bm:1}+{bl:1}+{b_bx:1}={bh:2} b, bx={bx:3} b, br={br:3} b, kx={kx:1}, kr={kr:2}")
         
     
                     
@@ -310,6 +314,7 @@ for w in range(0,nb_w):
 tps2 = time.perf_counter()
 print("times to encode the {} windows: {:.2f} s".format(nb_w,tps2 - tps1))
 #### First and second stage   
+
 
 plt.figure(figsize=(8,4), dpi=100)
 plt.plot(x_test_RTE[0:nb_w*N],lw=2,label='x')
@@ -455,8 +460,6 @@ plt.yticks(yticks_positions, yticks_labels)
 plt.show() 
 
 print("mean SNR",np.mean(SNR))
-
-
 
 
 
