@@ -12,7 +12,7 @@ def normalize(x):
     # Vérifie si n'importe quelle valeur de x est égale à 0.0
     #print(x.any()==0.0)
     if x.any()==0.0:
-        print("ok")
+
         k = 0  # k est initialisé à 0
         return x, k  # Si une valeur de x est 0.0, retourne x inchangé et k
     

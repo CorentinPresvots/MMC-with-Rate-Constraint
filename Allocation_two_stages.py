@@ -656,6 +656,7 @@ if __name__ == "__main__":
     
     
     
+    
     #####################
     # Code test pour visualiser si l'allocation de bits théorique entre les deux étages de comression cole à la réalité pour le modèle sinusoïdal
     #####################

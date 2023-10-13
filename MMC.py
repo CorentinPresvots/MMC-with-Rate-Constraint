@@ -30,7 +30,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         
 
         self.family_best_p="none" #previous family used
-        self.theta_tilde_best_p=[0] # previous parametric vector
+        self.theta_tilde_best_p=[] # previous parametric vector
         self.m_best_p="none"
         
         
@@ -124,7 +124,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         Allocation_poly_bx_br.__init__(self,N,fs,False) 
         Allocation_pred_samples_bx_br.__init__(self,N,fs,False) 
         
-        self.nb_test=4 # nombre de test réalisé autour de bx et br théorique déterminé complexité: pour un modèle on test -self.nb_test + bx_opt à self.nb_test + bx_opt
+        self.nb_test=16 # nombre de test réalisé autour de bx et br théorique déterminé complexité: pour un modèle on test -self.nb_test + bx_opt à self.nb_test + bx_opt
 
         
         #self.list_btot=[32,64,96,128,160,192,224,256]
@@ -317,6 +317,11 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
             
             theta_pred_para_hat=[self.get_theta_pred_samples(X_pred_para,x_n)]*(self.nb_model_pred_para)
             
+            
+            #X_pred_samples2_p=self.get_X(x_p_n[0:2*self.N],order,eta)
+            #m_theta_pred_para=[self.get_theta_pred_samples(X_pred_samples2_p,x_p_n[2*self.N:3*self.N])]*self.nb_model_pred_samples
+
+            
             m_theta_pred_para=[self.theta_tilde_best_p]*self.nb_model_pred_para
            
 
@@ -493,7 +498,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     bx_test=bx_tot-0*self.b_kx-self.b_kr-self.b_bx_pred_samples[k]
                     #print(bx_test,0*self.b_kx-self.b_kr-self.b_bx_pred_samples[k])
                     #  and  
-                    if bx_test>=0 and bx_pred_samples_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_samples_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_pred_samples[k]-1:
+                    if bx_test>=0 and bx_pred_samples_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_samples_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_pred_samples[k]-1:
                         #print("bx_pred_samples_hat[k]+-self.nb_test",bx_pred_samples_hat[k]-self.nb_test,bx_test,bx_pred_samples_hat[k]+self.nb_test)
                      
                         theta_pred_samples_tilde_test,code_theta_pred_samples_tilde_test=self.get_theta_pred_samples_tilde(theta_pred_samples_hat[k],bx_test,m_theta_model_pred_samples[k],self.w_theta_model_pred_samples[k])
@@ -531,7 +536,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                         
                     bx_test=bx_tot-0*self.b_kx-self.b_kr-self.b_bx_pred_para[k]
                     # 
-                    if bx_test>=0 and bx_pred_para_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_para_hat[k]+self.nb_test and  bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_pred_para[k]-1:
+                    if bx_test>=0 and bx_pred_para_hat[k]-self.nb_test<=bx_test and bx_test<=bx_pred_para_hat[k]+self.nb_test and  bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_pred_para[k]-1:
                     
                        
                         SNR_model_test=0
@@ -610,7 +615,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                 bx_test=bx_tot-self.b_kx-self.b_kr-self.b_bx_sin[k]
              
                 #print("bx_test sin",bx_test)
-                if bx_test>=0 and bx_sin_hat[k]-self.nb_test<=bx_test and bx_test<= bx_sin_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_sin[k]-1:
+                if bx_test>=0 and bx_sin_hat[k]-self.nb_test<=bx_test and bx_test<= bx_sin_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_sin[k]-1:
     
                     theta_sin_tilde_test,code_theta_sin_tilde_test=self.get_theta_sin_tilde(theta_sin_hat[k],bx_test,self.m_theta_model_sin[k],self.w_theta_model_sin[k])
                     #print("theta_sin_tilde_test",theta_sin_tilde_test)
@@ -648,7 +653,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     
                 bx_test=bx_tot-self.b_kx-self.b_kr-self.b_bx_poly[k]
                 #print("bx_test poly",bx_test)
-                if  bx_test>=0 and bx_poly_hat[k]-self.nb_test<=bx_test and bx_test<=bx_poly_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<2**self.b_bx_poly[k]-1:
+                if  bx_test>=0 and bx_poly_hat[k]-self.nb_test<=bx_test and bx_test<=bx_poly_hat[k]+self.nb_test and bx_test<=btot-self.bm-self.bl-bx_tot and bx_test<=2**self.b_bx_poly[k]-1:
                     #print("theta_poly_hat[k]",theta_poly_hat[k])
                     #print("[0]*self.order_model_poly[k],self.w_theta_model_poly[k]",[0]*(self.order_model_poly[k]+1),self.w_theta_model_poly[k])
                     theta_poly_tilde_test,code_theta_poly_tilde_test=self.get_theta_poly_tilde(theta_poly_hat[k],bx_test,[0]*(self.order_model_poly[k]+1),self.w_theta_model_poly[k])
@@ -692,7 +697,6 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     family_best="none"
                     m='none'
                     
-                
                     b_bx=0
                     bx=bx_test
                     
@@ -711,7 +715,6 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
    
                     kx=kx_
                     
-    
                     to_do_second_stage=1
                     
 
@@ -725,7 +728,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                              
                 
                 br=btot-self.bm-self.bl-b_kx-b_bx-bx-b_kr
-  
+                #print("br encoder",br)
                 
                 ########## normalisation de r
                 _,kr=normalize(r)
@@ -735,7 +738,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     kr=0
                 r_n=r*2**(-kr)
             
-            
+                
                 SNR_residual,l,x_residual,code_residual=self.best_residual(r_n,br)
                 to_do_second_stage=0
          
@@ -765,7 +768,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     
                     self.kx_best=kx
                     self.kr_best=kr
-                    
+                    #print("self.kr_best",self.kr_best)
                     self.theta_hat_best=theta_hat
                     self.theta_tilde_best=theta_tilde
                     
@@ -778,16 +781,22 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
                     self.family_best=family_best
         
              
-        if self.family_best!="pred para" and self.family_best!="none":
+        if self.family_best!="pred para":# and self.family_best!="none":
             self.family_best_p=self.family_best
             self.m_best_p=self.m_best
-            self.b_bx_pred_para=[int(np.ceil(np.log2(len(self.theta_tilde_best_p)*self.nb_max_bit_theta_pred))) 
-                                        for k in range(self.nb_model_pred_para)]
+            self.b_bx_pred_para=[int(np.ceil(np.log2(np.max([1,len(self.theta_tilde_best)])*self.nb_max_bit_theta_pred)))]*self.nb_model_pred_para
           
             self.bx_pred_para_max=[2**self.b_bx_pred_para[k]-1 for k in range(self.nb_model_pred_para)]
-             
-        if self.family_best!="none":   
-            self.theta_tilde_best_p=self.theta_tilde_best
+        
+            
+        
+        
+        
+        
+        
+        
+        #if self.family_best!="none":   
+        self.theta_tilde_best_p=self.theta_tilde_best
         
 
         #print("self.bx_pred_para_max enc",self.bx_pred_para_max)
@@ -801,7 +810,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         #print("code_kx",code_kx)
         
         
-
+        #print("self.bx_best",self.bx_best,"self.b_bx_best",self.b_bx_best)
         code_bx=my_bin(self.bx_best,self.b_bx_best)
         #print("code_bx",code_bx)
         
@@ -847,7 +856,7 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         
    
         self.family_dec_p="none" #previous family used
-        self.theta_tilde_dec_p=[0] # previous parametric vector
+        self.theta_tilde_dec_p=[] # previous parametric vector
         self.m_dec_p="none"
         
         
@@ -975,12 +984,9 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         
         
         
-        """
-        print("b_bx_sin",  self.b_bx_sin)
-        print("b_bx_poly", self.b_bx_poly)
-        print("b_bx_pred_samples", self.b_bx_pred_samples)
-        print("b_bx",self.b_bx)
-        """
+        
+
+        
         #################### grandeurs optimals meilleurs modèle + meilleur méthode de compression de résidu
 
     def ini_MMC_dec(self):
@@ -1005,6 +1011,7 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         self.kr_dec=0            
     
         self.family_dec="none"
+    
     def trouver_racine(self,dictionnaire,name_model):
         for cle, valeur in dictionnaire.items():
             if isinstance(valeur, dict):
@@ -1019,7 +1026,12 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
 
 
     def MMC_dec(self,code,x_p,btot):
-        
+        """
+        print("b_bx_sin",  self.b_bx_sin,"bx_max=",self.bx_sin_max)
+        print("b_bx_poly", self.b_bx_poly,"bx_max=",self.bx_poly_max)
+        print("b_bx_pred_samples", self.b_bx_pred_samples,"bx_max=",self.bx_pred_samples_max)
+        print("b_bx_pred_para", self.b_bx_pred_para,"bx_max=",self.bx_pred_para_max)
+        """
         self.ini_MMC_dec()
 
         #decodage 
@@ -1071,7 +1083,9 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
             
         ptr+=self.b_kx_dec
         #print("kx", self.kx_dec)
-
+         
+        
+      
         self.b_bx_dec=self.b_bx[label_model]
         #print("b_bx", self.b_bx_dec)
 
@@ -1102,16 +1116,15 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
             eta_pred_samples=self.Model_used[self.family_dec][self.m_dec][1]
             X=self.get_X(x_p[self.N:3*self.N]*2**(-self.kx_dec),order_pred_samples,eta_pred_samples)
             
-            #m_theta_pred_samples=self.get_m_theta_pred_samples(order_pred_samples,eta_pred_samples,0)
-        
-            #"""
+
+            
             if self.family_dec_p!="pred samples":
                 m_theta_pred_samples=self.get_m_theta_pred_samples(order_pred_samples,eta_pred_samples,0)
             
             else :   
                 X_pred_samples2=self.get_X(x_p[0:2*self.N]*2**(-self.kx_dec),order_pred_samples, eta_pred_samples) 
                 m_theta_pred_samples=self.get_theta_pred_samples(X_pred_samples2,x_p[2*self.N:3*self.N]*2**(-self.kx_dec))
-            #"""
+     
             w_theta_pred_samples=self.Model_used[self.family_dec][self.m_dec][2]
             self.theta_tilde_dec=self.get_theta_pred_samples_tilde(code[ptr:ptr+self.bx_dec],self.bx_dec,m_theta_pred_samples,w_theta_pred_samples)
             self.x_model_dec=self.get_model_pred_samples(X,*self.theta_tilde_dec)*2**self.kx_dec
@@ -1123,12 +1136,12 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
                 
                 w_theta_sin_p=self.Model_used[self.family_dec_p][self.m_dec_p][1]
                 w_theta_sin= [w_theta_sin_p[i]/self.Model_used[self.family_dec][self.m_dec][0] for i in range(3)]
-                self.theta_tilde_dec= m_theta_sin+self.get_theta_sin_tilde(code[ptr:ptr+self.bx_dec],self.bx_dec,m_theta_sin,w_theta_sin)
+                self.theta_tilde_dec= self.get_theta_sin_tilde(code[ptr:ptr+self.bx_dec],self.bx_dec,m_theta_sin,w_theta_sin)
                 self.x_model_dec=self.get_model_sin(self.t,*self.theta_tilde_dec)*2**self.kx_dec 
                 
             elif self.family_dec_p=="poly":
                 
-                order=w_theta_poly_p=self.Model_used[self.family_dec_p][self.m_dec_p][0]
+                order=self.Model_used[self.family_dec_p][self.m_dec_p][0]
                 m_theta_poly=self.theta_tilde_dec_p
                 w_theta_poly_p=self.Model_used[self.family_dec_p][self.m_dec_p][1]
                 w_theta_poly=[w_theta_poly_p[i]/self.Model_used[self.family_dec][self.m_dec][0] for i in range(order+1)]
@@ -1141,7 +1154,20 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
                 eta_pred_samples=self.Model_used[self.family_dec_p][self.m_dec_p][1]
                 X=self.get_X(x_p[self.N:3*self.N]*2**(-self.kx_dec),order_pred_samples,eta_pred_samples)
 
+
+
+                #X_pred_samples2_p=self.get_X(x_p[0:2*self.N]*2**(-self.kx_dec),order_pred_samples,eta_pred_samples)
+                #m_theta_pred_samples=self.get_theta_pred_samples(X_pred_samples2_p,x_p[2*self.N:3*self.N]*2**(-self.kx_dec))
+
+
+
+
                 m_theta_pred_samples=self.theta_tilde_dec_p
+                
+                
+                
+                
+                
                 w_theta_pred_samples_p=self.Model_used[self.family_dec_p][self.m_dec_p][2]
                 w_theta_pred_samples=[w_theta_pred_samples_p[i]/self.Model_used[self.family_dec][self.m_dec][0] for i in range(order_pred_samples)]
 
@@ -1152,24 +1178,22 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         ptr+=self.bx_dec 
         
         
-        if self.family_dec!="pred para" and self.family_dec!="none":  
+        if self.family_dec!="pred para":# and self.family_dec!="none":  
             self.family_dec_p=self.family_dec#previous family used
            
             self.m_dec_p=self.m_dec
             
 
             
-            self.b_bx_pred_para=[int(np.ceil(np.log2(len(self.theta_tilde_dec_p)*self.nb_max_bit_theta_pred))) 
-                                        for k in range(self.nb_model_pred_para)]
+            self.b_bx_pred_para=[int(np.ceil(np.log2(np.max([1,len(self.theta_tilde_dec)])*self.nb_max_bit_theta_pred)))]*self.nb_model_pred_para
             
             
-            self.bx_pred_para_max=[2**self.b_bx_pred_para[k]-1
-                                        for k in range(self.nb_model_pred_para)]
+            self.bx_pred_para_max=[2**self.b_bx_pred_para[k]-1 for k in range(self.nb_model_pred_para)]
             
             self.b_bx=[0]+ self.b_bx_sin+self.b_bx_poly+self.b_bx_pred_samples+self.b_bx_pred_para    
         
-        if self.family_dec!="none": 
-            self.theta_tilde_dec_p=self.theta_tilde_dec # previous parametric vector
+        #if self.family_dec!="none": 
+        self.theta_tilde_dec_p=self.theta_tilde_dec # previous parametric vector
         #print("self.bx_pred_para_max dec",self.bx_pred_para_max)
         
         if self.m_dec!="none":
@@ -1183,17 +1207,15 @@ class Decode_one_window(Model_Decoder,Residual_Decoder):
         #print("kr", self.kr_dec)
 
         label_residual=int(my_inv_bin(code[ptr:ptr+self.bl]))
-        #print("label_residual",label_residual)
-        
+        #¶print("label_residual",label_residual)
+
         self.l_dec=self.label_residual[label_residual]
         ptr+=self.bl
         
         
 
         
-        #print(self.b_kx_dec,self.b_kr_dec,self.bm,self.bl,self.b_bx_dec)
-
-                
+ 
         self.br_dec=btot-self.bm-self.bl-self.b_kx_dec-self.b_kr_dec-self.b_bx_dec-self.bx_dec
         
         

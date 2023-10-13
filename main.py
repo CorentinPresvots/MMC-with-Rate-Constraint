@@ -43,20 +43,9 @@ nb_w=100 # number of encoded window
 """
 # Open the data
 """
+from get_RTE_test_signal import get_RTE_signal
 
-with open('data_test.txt', 'r') as file:
-    # Lire le contenu du fichier
-    content = file.read()
-
-# Extraire la liste à partir du contenu du fichier
-# En supposant que la liste est toujours dans la forme indiquée
-start = content.find('[')
-end = content.find(']')
-if start != -1 and end != -1:
-    # Extraire la partie entre crochets et la diviser en éléments individuels
-    list_str = content[start + 1:end]
-    x_test_RTE = [float(item.strip()) for item in list_str.split(',')]
-
+v1,v2,v3,i1,i2,i3=get_RTE_signal()
 
 
 
@@ -196,10 +185,15 @@ L=[0]*nb_w
 #### start encodage 
 x_p=np.zeros(3*N)
 
+
+x_test=list(v1)#copie du signal à compresser
+
+
+
 tps1 = time.perf_counter()
 for w in range(0,nb_w): 
   
-    x=np.array(x_test_RTE[w*N:(w+1)*N])
+    x=np.array(x_test[w*N:(w+1)*N])
     
     
     ##### coder
@@ -212,7 +206,7 @@ for w in range(0,nb_w):
     x_rec[w*N:(w+1)*N]=MMC_decoder.MMC_dec(code,x_p,btot)
     
     SNRdec=get_snr(x,MMC_decoder.x_rec_dec)
-    SNR_=MMC_coder.SNR_best 
+    SNRenc=get_snr(x,MMC_coder.x_rec_best)
     SNR_m_=MMC_coder.SNR_model_best 
     SNR_r_=MMC_coder.SNR_residual_best 
     b_used=len(code)   
@@ -229,9 +223,12 @@ for w in range(0,nb_w):
     kx=MMC_coder.kx_best  
     kr=MMC_coder.kr_best 
 
- 
+    
+    if SNRenc!=SNRdec:
+        
+        print("ERREUR !!!!!!!!!!!!!!!!!!!!!!!!!!")
      
-    print(f"window={w+1:3}, SNRenc={SNR_:5.2f} dB, SNRdec={SNRdec:2.2f} dB, SNR_m={SNR_m_:4.1f} dB, SNR_r={SNR_r_:4.1f} dB, b_used/btot={b_used:3}/{btot:3}, m={m:14}, l={l:7}, bh=b_kx+b_kr+bm+bl+b_bx={b_kx:1}+{b_kr:1}+{bm:1}+{bl:1}+{b_bx:1}={bh:2} b, bx={bx:3} b, br={br:3} b, kx={kx:1}, kr={kr:2}")
+    print(f"window={w+1:3}, SNRenc={SNRenc:5.2f} dB, SNRdec={SNRdec:2.2f} dB, SNR_m={SNR_m_:4.1f} dB, SNR_r={SNR_r_:4.1f} dB, b_used/btot={b_used:3}/{btot:3}, m={m:14}, l={l:7}, bh=b_kx+b_kr+bm+bl+b_bx={b_kx:1}+{b_kr:1}+{bm:1}+{bl:1}+{b_bx:1}={bh:2} b, bx={bx:3} b, br={br:3} b, kx={kx:1}, kr={kr:2}")
         
     
                     
@@ -253,6 +250,7 @@ for w in range(0,nb_w):
     SNR_m[w]=get_snr(x,MMC_decoder.x_model_dec)
     SNR_r[w]=get_snr(x-MMC_decoder.x_model_dec,MMC_decoder.x_residual_dec)
     
+
     R_m[w]=MMC_decoder.bx_dec
     R_r[w]=MMC_decoder.br_dec
     M[w]=MMC_coder.label_model[m]
@@ -317,7 +315,7 @@ print("times to encode the {} windows: {:.2f} s".format(nb_w,tps2 - tps1))
 
 
 plt.figure(figsize=(8,4), dpi=100)
-plt.plot(x_test_RTE[0:nb_w*N],lw=2,label='x')
+plt.plot(x_test[0:nb_w*N],lw=2,label='x')
 plt.plot(x_rec,lw=2,label='x_rec')
 plt.xlabel('ind sample')
 plt.ylabel('Voltage (kV)')
@@ -327,7 +325,7 @@ plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
 plt.show() 
 
 plt.figure(figsize=(8,4), dpi=100)
-plt.plot(x_test_RTE[0:nb_w*N]-x_rec,lw=2,label='x-x_rec')
+plt.plot(x_test[0:nb_w*N]-x_rec,lw=2,label='x-x_rec')
 plt.xlabel('ind sample')
 plt.ylabel('Voltage (kV)')
 plt.legend()
@@ -350,7 +348,7 @@ plt.show()
 
 #### first stage
 plt.figure(figsize=(8,4), dpi=100)
-plt.plot(x_test_RTE[0:nb_w*N],lw=2,label='x')
+plt.plot(x_test[0:nb_w*N],lw=2,label='x')
 plt.plot(x_model,lw=2,label='x_model')
 plt.xlabel('ind sample')
 plt.ylabel('Voltage (kV)')
@@ -360,7 +358,7 @@ plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
 plt.show() 
 
 plt.figure(figsize=(8,4), dpi=100)
-plt.plot(x_test_RTE[0:nb_w*N]-x_model,lw=2,label='x-x_model')
+plt.plot(x_test[0:nb_w*N]-x_model,lw=2,label='x-x_model')
 plt.xlabel('ind sample')
 plt.ylabel('Voltage (kV)')
 plt.legend()
@@ -459,7 +457,30 @@ plt.grid(which='minor', color='#999999', linestyle='-', alpha=0.2)
 plt.yticks(yticks_positions, yticks_labels)
 plt.show() 
 
-print("mean SNR",np.mean(SNR))
+print("mean SNR={:.2f} dB".format(np.mean(SNR)))
+print("mean SNR_m={:.2f} dB".format(np.mean(SNR_m)))
+print("mean b_x={:.2f} b".format(np.mean(R_m)))
+print("mean SNR_r={:.2f} dB".format(np.mean(SNR_r)))
+print("mean b_r={:.2f} b".format(np.mean(R_r)))
 
 
+"""
+v1
+nb_test= [ 0    , 1    , 2    , 3    , 4    , 5    , 8    , 16   ]
+time_mmc=[ 95.97,100.28,103.94,106.98,109.35,110.76,115.24,124.68]
+snr=     [ 41.47, 41.61, 41.72, 41.64, 41.71, 41.59, 41.69, 41.88]
+snr_m=   [ 26.94, 29.47, 30.08, 30.68, 31.40, 31.73, 31.72, 32.48]
+bx=      [  5.30,  6.11,  5.49,  5.46,  5.48,  5.77,  5.94,  6.24]
+snr_r=   [ 14.53, 12.14, 11.64, 10.96, 10.31,  9.86,  9.97,  9.39]
+br=      [109.05,107.87,108.69,108.52,108.28,107.89,107.63,107.16]
 
+
+v2
+nb_test= [ 0    , 1    , 2    , 3    , 4    , 5    , 8    , 16   ]
+time_mmc=[103.43,104.87,109.00,116.42,121.00,122.64,124.16,131.55]
+snr=     [ 43.68, 43.80, 43.75, 43.76, 43.83, 43.84, 43.79, 43.97]
+snr_m=   [ 30.74, 31.46, 31.92, 32.64, 33.27, 32.95, 33.12, 33.30]
+bx=      [  6.40,  6.17,  6.25,  7.14,  7.91,  7.21,  7.48,  7.44]
+snr_r=   [ 12.94, 12.34, 11.84, 11.12, 10.57, 10.89, 10.68, 10.67]
+br=      [107.40,107.66,107.51,106.58,105.43,106.31,105.87,105.65]
+"""

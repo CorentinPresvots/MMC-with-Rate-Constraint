@@ -65,10 +65,10 @@ class Khan_Encoder(Context_Aritmetic_Encoder):
     
     
         ###### ici sont définis le nombre de coefficients maximale codable dépendnant de br
-        self.nb_coefs_max=br#int(br/2)
-        self.nb_bits_coefs_max=max([0,int(np.ceil(np.log2(self.nb_coefs_max+10**(-8))))])
-        
-        
+        nb_coefs_max=br#br#
+        self.nb_bits_coefs_max=int(np.ceil(np.log2(np.max([1,nb_coefs_max]))))
+        self.nb_coefs_max=2**self.nb_bits_coefs_max-1
+        #print("EZW, br={}, nb_bits_coefs_max={}, nb_coefs_max={}".format(br,self.nb_bits_coefs_max,self.nb_coefs_max))
         self.flag = np.zeros(self.N) # Drapeau indiquant si un coefficient a déjà été considéré significatif. 0 : jamais significatif, 1 : au moins une fois significatif.
         
         ##### liste de même taille que coefs indiquant le numéro de bande pour chaque coefficient
@@ -135,7 +135,7 @@ class Khan_Encoder(Context_Aritmetic_Encoder):
                     
                     code_first=self.encode_one_symbol(x,self.occurrence_first_Khan,self.cumulate_occurrence_first_Khan)
                     
-                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs<self.nb_coefs_max :
+                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs+1<=self.nb_coefs_max :
                         #### mise à jours des variables 
                         self.symbol.append("SS") # on ajoute le symbole à la liste
                         self.coefs_rec[i]+=self.threshold/2# mise à jour du coef rec
@@ -166,7 +166,7 @@ class Khan_Encoder(Context_Aritmetic_Encoder):
                     code_first=self.encode_one_symbol(x,self.occurrence_first_Khan,self.cumulate_occurrence_first_Khan)
                     #print("x",x,"occurrence_first",self.occurrence_first,"cumulate_occurrence_first",self.cumulate_occurrence_first)
                     
-                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs<self.nb_coefs_max :
+                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs+1<=self.nb_coefs_max :
                         #### mise à jours des variables 
                         self.symbol.append("RR") # on ajoute le symbole à la liste
                         self.coefs_rec[i]-=self.threshold/2# mise à jour du coef rec
@@ -230,7 +230,7 @@ class Khan_Encoder(Context_Aritmetic_Encoder):
                     #print("code_ZR",code_ZR)
                     #print("occurrence_second",occurrence_second)
                     #print("cumulate_occurrence_second",cumulate_occurrence_second)
-                    if len(self.code)+len(code_ZR)+len(code_second)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs<self.nb_coefs_max :
+                    if len(self.code)+len(code_ZR)+len(code_second)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs+1+len(symbol_ZR)<=self.nb_coefs_max :
                         
                         #print("len(code)",len(self.code)+len(code_ZR)+len(code_second)+self.follow+2)
                         #### mise à jours des variables 
@@ -471,10 +471,11 @@ class Khan_Decoder(Context_Aritmetic_Decoder):
         
         
         
-        self.nb_coefs_max=br#int(br/2)
-        self.nb_bits_coefs_max=max([0,int(np.ceil(np.log2(self.nb_coefs_max+10**(-8))))])
+        nb_coefs_max=br#br#
+        self.nb_bits_coefs_max=int(np.ceil(np.log2(np.max([1,nb_coefs_max]))))
+        self.nb_coefs_max=2**self.nb_bits_coefs_max-1
         
-        
+        #print("self.nb_coefs_max",self.nb_coefs_max)
         #print("br",br)
         #print("self.nb_coefs_max",self.nb_coefs_max)
         #print("self.nb_bits_coefs_max",self.nb_bits_coefs_max)
@@ -675,7 +676,7 @@ if __name__ == "__main__":
     from Normalize import normalize
 
     import pywt 
-    br=128*4
+    br=128
     M=9
     
     adaptive_Khan =True
@@ -769,7 +770,8 @@ if __name__ == "__main__":
     
     #print("code=",code)
     print("longueur des mots de code = {} bits".format(len(code)),"br = {} bits".format(br))
-    print('nombre de symboles codés "+,-,Z,R":',nb_coefs)
+    print("Nb sym codé / Nb sym max = {} / {}".format(nb_coefs,KE.nb_coefs_max))
+   
     #print(AE.symbol)
 
     occurrence_first_Khan_=KE.occurrence_first_Khan

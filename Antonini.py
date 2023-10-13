@@ -64,10 +64,10 @@ class Antonini_Encoder(Context_Aritmetic_Encoder):
     
     
         ###### ici sont définis le nombre de coefficients maximale codable dépendnant de br
-        self.nb_coefs_max=br#int(br/2)
-        self.nb_bits_coefs_max=max([0,int(np.ceil(np.log2(self.nb_coefs_max+10**(-8))))])
-        
-        
+        nb_coefs_max=br/2
+        self.nb_bits_coefs_max=int(np.ceil(np.log2(max([1,nb_coefs_max]))))
+        self.nb_coefs_max=2**self.nb_bits_coefs_max-1
+        #print("Antonini, br={}, nb_bits_coefs_max={}, nb_coefs_max={}".format(br,self.nb_bits_coefs_max,self.nb_coefs_max))
         #print("br",br)
         #print("self.nb_coefs_max",self.nb_coefs_max)
         #print("self.nb_bits_coefs_max",self.nb_bits_coefs_max)
@@ -96,7 +96,7 @@ class Antonini_Encoder(Context_Aritmetic_Encoder):
                     
                     code_first=self.encode_one_symbol(x,self.occurrence_first,self.cumulate_occurrence_first)
                     
-                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs<self.nb_coefs_max :
+                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs+1<=self.nb_coefs_max :
                         #### mise à jours des variables 
                         self.symbol.append("S") # on ajoute le symbole à la liste
                         self.coefs_rec[i]+=self.threshold/2# mise à jour du coef rec
@@ -179,7 +179,7 @@ class Antonini_Encoder(Context_Aritmetic_Encoder):
                     code_first=self.encode_one_symbol(x,self.occurrence_first,self.cumulate_occurrence_first)
                     #print("x",x,"occurrence_first",self.occurrence_first,"cumulate_occurrence_first",self.cumulate_occurrence_first)
                     
-                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs<self.nb_coefs_max :
+                    if len(self.code)+len(code_first)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs+1<=self.nb_coefs_max :
                         #### mise à jours des variables 
                         self.symbol.append("R") # on ajoute le symbole à la liste
                         self.coefs_rec[i]-=self.threshold/2# mise à jour du coef rec
@@ -309,7 +309,7 @@ class Antonini_Encoder(Context_Aritmetic_Encoder):
                     
                     code_second=self.encode_one_symbol(x,occurrence_second,cumulate_occurrence_second)
                     
-                    if len(self.code)+len(code_R)+len(code_second)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs<self.nb_coefs_max :
+                    if len(self.code)+len(code_R)+len(code_second)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs+1<=self.nb_coefs_max :
                         #### mise à jours des variables 
                         self.flag[i]=np.sign(self.res[i]) 
                         self.symbol.extend(sym_R) # on ajoute le symbole à la liste indiquant le nombre de zero à coder avant le prochain symbole significatif
@@ -398,7 +398,7 @@ class Antonini_Encoder(Context_Aritmetic_Encoder):
         if count>0:
             x=4 #index correspondant à "E"
             code_second=self.encode_one_symbol(x,self.occurrence_second,self.cumulate_occurrence_second)
-            if len(self.code)+len(code_second)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs<self.nb_coefs_max :
+            if len(self.code)+len(code_second)+self.follow+2<=self.br-self.nb_bits_coefs_max and self.nb_coefs+1<=self.nb_coefs_max :
                 #### mise à jours des variables 
  
                 self.symbol.extend("E") # on ajoute le symbole à la liste indiquant le nombre de zero à coder avant le prochain symbole significatif
@@ -502,10 +502,10 @@ class Antonini_Decoder(Context_Aritmetic_Decoder):
         
         
         
-        self.nb_coefs_max=br#int(br/2)
-        self.nb_bits_coefs_max=max([0,int(np.ceil(np.log2(self.nb_coefs_max+10**(-8))))])
-        
-        
+        nb_coefs_max=br/2#br
+        self.nb_bits_coefs_max=int(np.ceil(np.log2(max([1,nb_coefs_max]))))
+        self.nb_coefs_max=2**self.nb_bits_coefs_max-1
+        #print("nb_coefs_max",self.nb_coefs_max)
         #print("br",br)
         #print("self.nb_coefs_max",self.nb_coefs_max)
         #print("self.nb_bits_coefs_max",self.nb_bits_coefs_max)
@@ -687,7 +687,7 @@ if __name__ == "__main__":
     from scipy.fftpack import dct,idct
     from Measures import curve_tex
 
-    br=50
+    br=64
     M=9
     
     adaptive =True
@@ -706,11 +706,11 @@ if __name__ == "__main__":
  
     
     
-    sigma=0.01 # écart type du bruit introduit dans le signal test
+    sigma=0.1 # écart type du bruit introduit dans le signal test
     
 
     ###############  test polynôme d'ordre k
-    order=15
+    order=4
     theta=np.random.uniform(-0.4,0.4,order+1) # 
     #print([np.round(100*theta[k])/100 for k in range(order+1)])
     model_poly=Model_poly(fn,fs,N,verbose)
@@ -753,7 +753,7 @@ if __name__ == "__main__":
     
     #print("code=",code)
     print("longueur des mots de code = {} bits".format(len(code)),"br = {} bits".format(br))
-    print('nombre de symboles codés "R,S,+,-E":',nb_coefs)
+    print("Nb sym codé / Nb sym max = {} / {}".format(nb_coefs,AE.nb_coefs_max))
     #print(AE.symbol)
 
     occurrence_first_=AE.occurrence_first
