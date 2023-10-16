@@ -9,29 +9,7 @@ import matplotlib.pyplot as plt
 
 
 def normalize(x):
-    # Vérifie si n'importe quelle valeur de x est égale à 0.0
-    #print(x.any()==0.0)
-    if x.any()==0.0:
-
-        k = 0  # k est initialisé à 0
-        return x, k  # Si une valeur de x est 0.0, retourne x inchangé et k
-    
-    # Trouve la valeur maximale en valeur absolue dans x
-    x_max = max(abs(x))
-    
-    if x_max >= 1:
-        k = 0
-        # Trouve la puissance de 2 (k) pour laquelle x_max est supérieure ou égale à 2^k
-        while x_max > 2**k:
-            k += 1
-    else:
-        k = 0
-        # Trouve la puissance de 2 (k) pour laquelle x_max est inférieure à 2^k
-        while x_max < 2**k:
-            k -= 1
-        k += 1  # Augmente k de 1 pour que la valeur absolue de x_max soit entre 0.5 et 1
-
-    # Mise à l'échelle de x en multipliant par 2^-k
+    k=np.ceil(np.log2(np.max(np.abs(x))+10**(-8)))
     x_n = x * 2**(-k)
     return x_n, k  # Retourne x mis à l'échelle et la valeur de k
 
