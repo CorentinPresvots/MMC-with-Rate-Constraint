@@ -124,7 +124,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         Allocation_poly_bx_br.__init__(self,N,fs,False) 
         Allocation_pred_samples_bx_br.__init__(self,N,fs,False) 
         
-        self.nb_test=16 # nombre de test réalisé autour de bx et br théorique déterminé complexité: pour un modèle on test -self.nb_test + bx_opt à self.nb_test + bx_opt
+        self.nb_test=4 # nombre de test réalisé autour de bx et br théorique déterminé complexité: pour un modèle on test -self.nb_test + bx_opt à self.nb_test + bx_opt
 
         
         #self.list_btot=[32,64,96,128,160,192,224,256]
