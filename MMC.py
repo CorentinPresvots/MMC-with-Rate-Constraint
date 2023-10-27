@@ -468,7 +468,7 @@ class Encode_one_window(Model_Encoder,Residual_Encoder,Allocation_sin_bx_br,Allo
         elif self.family_best_p=="pred samples":
             bx_pred_para_hat=[self.get_pred_samples_bx_br(SE_pred_para_hat[k],
                                 btot-self.bm-self.bl-0*self.b_kx-self.b_kr-self.b_bx_pred_para[k],
-                                m_theta_pred_para[k],w_theta_pred_para[k],x_p_n[self.N:3*self.N],self.eta_model_pred_samples[k])[0] for k in range(self.nb_model_pred_para)]
+                                m_theta_pred_para[k],w_theta_pred_para[k],x_p_n[self.N:3*self.N],eta)[0] for k in range(self.nb_model_pred_para)]
 
         
         
