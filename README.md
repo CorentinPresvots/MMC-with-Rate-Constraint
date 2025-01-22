@@ -1,4 +1,4 @@
-# Multiple-Model Coding (MMC) Scheme
+# Multiple-Model Coding (MMC) Scheme for Electrical Signal Compression
 
 > **Citation:**
 >
