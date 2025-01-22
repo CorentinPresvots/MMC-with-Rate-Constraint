@@ -9,7 +9,6 @@
 > note = {Available at SSRN: [https://ssrn.com/abstract=4584757](https://ssrn.com/abstract=4584757) or [http://dx.doi.org/10.2139/ssrn.4584757](http://dx.doi.org/10.2139/ssrn.4584757)}  
 > }
 
-  
 This code proposes a low-latency Multiple-Model Coding approach to compress sampled electrical signal
 waveforms under encoding rate constraints. The approach is window-based. Several parametric waveform models
 are put in competition to obtain a first coarse representation of the signal in each considered window. Then, different
@@ -17,61 +16,39 @@ residual compression techniques are compared to minimize the residual reconstruc
 are quantized, and the allocation of the rate budget among the two steps is optimized.
 
 Article is available at: [MMC](https://www.researchgate.net/publication/374226674_Multiple-Model_Coding_Scheme_for_Electrical_Signal_Compression)
+You can integrate the two tables into your README as follows:
+
+---
 
 ## Stage 1: The various competing models include
 
+### Model types and their distributions
+The following table outlines the model types used in the first stage of the Multiple-Model Coding (MMC) scheme, along with the corresponding a priori distributions for their parameters:
 
-- **No model**
-  - (none)
+| Model type                  | $p_{\boldsymbol{\theta}^{m}}$                                                                                               |
+|----------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| **Bypass**                 |                                                                                                                             |
+| **Sinusoidal**              | $\mathcal{U}\left(\boldsymbol{\theta}^m;(0.5,40.9,-\pi)^T,(1,50.1,\pi)^T\right)$ |
+| **Polynomial, order $K$ with $K\in\left[0,\dots,9\right]$**  | $\mathcal{U}\left(\boldsymbol{\theta}^m;-(\frac{w_1^m}{2}, \dots,\frac{w_{K+1}^m}{2}))^T,(\frac{w_1^m}{2}, \dots, \frac{w_{K+1}^m}{2})^T\right)$ |
+| **Sample predictive, order $K$ with $K\in\left[1,2\right]$, $\eta=\in\left[0,1\right]$**| $\mathcal{U}\left(\boldsymbol{\theta}^m;-\frac{1}{2}\boldsymbol{1},\frac{1}{2}\boldsymbol{1}\right)$                      |
+| **Parameter predictive**        | $\mathcal{U}\left(\boldsymbol{\delta}\boldsymbol{\theta}^m;-0.1\cdot\boldsymbol{1},0.1\cdot\boldsymbol{1}\right)$          |
 
-- **Sinusoidal models**
-  - (sin-1): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.2},\frac{\phi}{\pi}\right);\left[-1,1 \right]^3\right)$ 
-  - (sin-2): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\left(\frac{a-0.75}{0.25},\frac{f-f_\text{n}}{0.05},\frac{\phi}{\pi}\right);\left[-1,1 \right]^3\right)$
+In these distributions:
+- $\mathcal{U}(\boldsymbol{\theta}^m; \boldsymbol{a}^m, \boldsymbol{b}^m)$ represents a uniform distribution with parameters $\boldsymbol{a}^m$ and $\boldsymbol{b}^m$.
+- $\boldsymbol{1}$ is a vector of ones matching the dimension of $\boldsymbol{\theta}^m$.
+- For the polynomial model, we choose uniform prior distributions with widths $w_k^m$ for the $k$-th coefficient of the polynomial model $m$. The values of $w_k^m$ were determined to encapsulate 90\% of the total energy of the distribution of $\theta_k^m$, based on an analysis of 20,000 signals from the [Data\_u](https://github.com/rte-france/digital-fault-recording-database).
 
+### Residual compression methods
+The second stage of the MMC scheme applies various residual compression methods, each with an associated a priori distribution:
 
-- **Polynomial models of order 0 to 8. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros.**  
-  - (poly-0): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{1}\right)$
-  - (poly-1): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{2}\right)$
-  - (poly-2): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{3}\right)$
-  - (poly-3): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{4}\right)$
-  - (poly-4): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{5}\right)$
-  - (poly-5): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{6}\right)$
-  - (poly-6): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{7}\right)$
-  - (poly-7): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{8}\right)$
-  - (poly-8): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\boldsymbol{\theta};\left[-1,1\right]^{9}\right)$
-
-- **Parameter predictive models. Mean value of $\boldsymbol{\theta}$ is assumed to be zeros. $i$: index of current window**
-  - (pred para-2): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(2\left(\boldsymbol{\theta}-\boldsymbol{\theta}^{i-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}^{i-1}\right)}\right)$
-  - (pred para-5): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(5\left(\boldsymbol{\theta}-\boldsymbol{\theta}^{i-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}^{i-1}\right)}\right)$
-  - (pred para-10): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(10\left(\boldsymbol{\theta}-\boldsymbol{\theta}^{i-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}^{i-1}\right)}\right)$
-  - (pred para-50): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(50\left(\boldsymbol{\theta}-\boldsymbol{\theta}^{i-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}^{i-1}\right)}\right)$
-  - (pred para-100): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(100\left(\boldsymbol{\theta}-\boldsymbol{\theta}^{i-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}^{i-1}\right)}\right)$
-  - (pred para-500): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(500\left(\boldsymbol{\theta}-\boldsymbol{\theta}^{i-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}^{i-1}\right)}\right)$
-  - (pred para-1000): $p_{\boldsymbol{\theta}}=\mathcal{U}\left(1000\left(\boldsymbol{\theta}-\boldsymbol{\theta}^{i-1}\right);\left[-1,1\right]^{\text{dim}\left(\boldsymbol{\theta}^{i-1}\right)}\right)$
- 
-    
-- **Sample predictive models. Mean value $\mathbb{E}\left[\boldsymbol{\theta}\right]$ is estimated depending of previous encoded window**
-  - (pred samples-1-0): $N_p=1$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
-  - (pred samples-1-1): $N_p=1$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.1};\left[-1,1\right]^{1}\right)$
-  - (pred samples-2-0): $N_p=2$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.3};\left[-1,1\right]^{2}\right)$
-  - (pred samples-2-1): $N_p=2$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.3};\left[-1,1\right]^{2}\right)$
-  - (pred samples-3-0): $N_p=3$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.5};\left[-1,1\right]^{3}\right)$
-  - (pred samples-3-1): $N_p=3$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{0.5};\left[-1,1\right]^{3}\right)$
-  - (pred samples-4-0): $N_p=4$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
-  - (pred samples-4-1): $N_p=4$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{4}\right)$
-  - (pred samples-5-0): $N_p=5$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
-  - (pred samples-5-1): $N_p=5$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{5}\right)$
-  - (pred samples-6-0): $N_p=6$, $\eta=0$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
-  - (pred samples-6-1): $N_p=6$, $\eta=1$, $p_{\boldsymbol{\theta}}=\mathcal{U}\left(\frac{\boldsymbol{\theta}-\mathbb{E}\left[\boldsymbol{\theta}\right]}{1.5};\left[-1,1\right]^{6}\right)$
-              - 
-## Stage 2: The different competing residual compression methods are:
-
-- Antonini's method (DCT+BPC)
+| Method type                | $p_{\boldsymbol{y}^{\ell}}$                                                   |
+|----------------------------|-------------------------------------------------------------------------------|
+| **Bypass**                 |                                                                               |
+| **[DCT + BPC](https://www.academia.edu/26719905/A_new_bitplane_coder_for_scalable_transform_audio_coding)**              | $\mathcal{U}\left(\boldsymbol{y};-\frac{1}{2}\boldsymbol{1},\frac{1}{2}\boldsymbol{1}\right)$ |
+| **[DWT + BPC](https://ieeexplore.ieee.org/document/6682511)**              | $\mathcal{U}\left(\boldsymbol{y};-\frac{1}{2}\boldsymbol{1},\frac{1}{2}\boldsymbol{1}\right)$ |
 
 
-- Khan's method (DWT+BPC)
-
-
+Refer to the detailed sections in the paper for further explanation of each method’s parameters and performance considerations.
 
 # main.py
 The main file will compress a 2-second reference signal:
