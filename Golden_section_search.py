@@ -43,8 +43,8 @@ class Encode_one_window(Model_Encoder, Residual_Encoder):
         self.nb_max_bit_theta = 10  # Maximum number of bits per parameter.
         self.n_sym = 10  # Maximum number of bits to reconstruct the residual.
         
-        self.max_size_Nx=0 # size max interval of search for nx, stop the Golden Section search
-        self.max_size_Nx = 0 # Maximum size of the search interval for nx; determines when the Golden Section search stops.
+        self.max_size=0 # size max interval of search for nx, stop the Golden Section search
+        self.max_size_Nx= 0 # count the nuber of DCT and DWT evalueted.
 
         
     def ini_MMC_enc(self):
@@ -537,7 +537,7 @@ class Encode_one_window(Model_Encoder, Residual_Encoder):
                     n_xd = min_rate_per_parameter + max_rate_per_parameter - n_xc
     
                     # Break if the interval becomes too small
-                    if n_xd - n_xc <= self.max_size_Nx:
+                    if n_xd - n_xc <= self.max_size:
                         break
     
                     # Shift values for the next iteration
@@ -572,7 +572,7 @@ class Encode_one_window(Model_Encoder, Residual_Encoder):
                     n_xc = int(np.floor(alpha * min_rate_per_parameter + (1 - alpha) * max_rate_per_parameter))
     
                     # Break if the interval becomes too small
-                    if n_xd - n_xc <= self.max_size_Nx:
+                    if n_xd - n_xc <= self.max_size:
                         break
     
                     # Shift values for the next iteration
