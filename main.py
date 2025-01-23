@@ -116,7 +116,7 @@ for order in range(0, 10):  # Define models up to order 9
     w_theta_poly = [
         min(1.55, sigma_poly[order][k] * 7) for k in range(order + 1)
     ]  # Compute bound widths for each coefficient
-    print(order,np.array(w_theta_poly)/2)
+    
     Model_used[id_model] = {
         "name": f"poly-{order}",
         "family": "poly",
