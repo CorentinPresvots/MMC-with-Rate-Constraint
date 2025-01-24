@@ -43,7 +43,7 @@ class Encode_one_window(Model_Encoder, Residual_Encoder):
         self.nb_max_bit_theta = 10  # Maximum number of bits per parameter.
         self.n_sym = 10  # Maximum number of bits to reconstruct the residual.
         
-        self.max_size=0 # size max interval of search for nx, stop the Golden Section search
+        self.max_size=1 # size max interval of search for nx, stop the Golden Section search
         self.max_size_Nx= 0 # count the nuber of DCT and DWT evalueted.
 
         
