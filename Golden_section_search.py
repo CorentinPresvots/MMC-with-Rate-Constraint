@@ -494,8 +494,8 @@ class Encode_one_window(Model_Encoder, Residual_Encoder):
             SNR_model_c, SNR_residual_c, theta_tilde_c, code_model_c, x_model_c, id_residual_c, \
                 kr_c, nb_sym_c, code_residual_c, x_residual_c = self.f(id_model_test, n_xc, n_max)
     
-            if self.best_Model_used[id_model_test]["name"] == "none":
-                # If the model is "none," the second test point uses the same results as the first
+            if n_xc == n_xd:
+                # If the model is "none," or n_xc == n_xd the second test point uses the same results as the first
                 SNR_model_d, SNR_residual_d, theta_tilde_d, code_model_d, x_model_d, id_residual_d, \
                     kr_d, nb_sym_d, code_residual_d, x_residual_d = SNR_model_c, SNR_residual_c, \
                                                                    theta_tilde_c, code_model_c, \
