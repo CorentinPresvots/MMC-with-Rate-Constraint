@@ -1,4 +1,4 @@
-# Multiple-Model Coding (MMC) Scheme for Electrical Signal Compression
+# Multiple-Model Coding (MMC) Scheme for Electrical Signal Compression with Rate Constraint
 
 > **Citation:**
 >
