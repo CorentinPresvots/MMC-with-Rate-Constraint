@@ -406,7 +406,7 @@ for id_signal in range(nb_signal):
         plt.bar([t[k] for k in range(0, nb_w * N, N)], R_h[id_signal][phase], width=largeur_barre, bottom=R_m[id_signal][phase] + R_r[id_signal][phase], color='g')
         plt.bar([t[k] for k in range(0, nb_w * N, N)], R_unused[id_signal][phase], width=largeur_barre, bottom=R_m[id_signal][phase] + R_r[id_signal][phase] + R_h[id_signal][phase], color='y')
         plt.xlabel('t (s)')
-        plt.ylabel('Rate')
+        plt.ylabel('Rate (bits)')
         plt.legend(["R_m", "R_r", "R_h", "R_unused"])
         plt.title(f"Bits Used, Mean = {np.mean(R_m[id_signal][phase] + R_r[id_signal][phase] + R_h[id_signal][phase]):.2f} bits, "
                   f"Signal: {id_signal}, Phase: {phase + 1}")
