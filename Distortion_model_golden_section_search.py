@@ -47,7 +47,7 @@ class Encode_one_window(Model_Encoder, Residual_Encoder):
         self.delta_nx=8 # number of tested value for nx
         self.delta_M=3  # number of tested model
         
-        self.max_size=0 # stop the golden section search when nxd-nxc<= self.max_size
+        self.max_size=1 # stop the golden section search when nxd-nxc<= self.max_size
         self.max_size_Nx = 0 # Maximum size of the search interval for nx; determines when the Golden Section search stops.
 
 
