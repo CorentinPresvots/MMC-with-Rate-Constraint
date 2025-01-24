@@ -105,6 +105,8 @@ This approach applies a distortion model to pre-select candidate models and bit 
    - The least complex method (~25×O(Nlog(N))).  
    - Fastest option, but with the lowest compression performance (47.56 dB SNR at 1 bit/sample).
 
+for 4 and 5: You can further reduce the complexity of these approaches by adjusting certain parameters in the code. Specifically, modifying self.delta_M (= 3 ini) (the number of top-performing models retained for rate-distortion model predictions) and self.delta_nx (= 4 ini) (which sets the search interval around the distortion model’s predicted optimal $n_{\text{x}}$) can narrow the search space. By selecting smaller values for these parameters, the code can focus on fewer candidates and narrower intervals, leading to faster computations at the expense of possibly skipping some alternative configurations.
+
 ### Encoding and Decoding
 The main code handles the compression process for each window by:  
 1. Using the selected encoding method to compress the samples within a window.  
