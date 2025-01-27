@@ -16,7 +16,6 @@ residual compression techniques are compared to minimize the residual reconstruc
 are quantized, and the allocation of the rate budget among the two steps is optimized.
 
 Article is available at: [MMC](https://www.researchgate.net/publication/374226674_Multiple-Model_Coding_Scheme_for_Electrical_Signal_Compression)
-You can integrate the two tables into your README as follows:
 
 ---
 
