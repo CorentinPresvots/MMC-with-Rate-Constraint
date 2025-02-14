@@ -42,9 +42,9 @@ if __name__ == "__main__":
     T = 0.02  # Total duration (in seconds)
     
     # Input parameters
-    id_signal = 1     # id of signals to be encoded
-    id_phase = 0      # id of signal phases (u1,u2,u3,i1,i3,i3)
-    id_w = 20         # Number of non-overlapping windows per signal
+    id_signal = 1     # id of signal
+    id_phase = 0      # id of signal phase (u1,u2,u3,i1,i3,i3)
+    id_w = 20         # id of window
 
     x_test = get_signal(id_signal)[id_phase][id_w*N:(id_w+1)*N]
     
