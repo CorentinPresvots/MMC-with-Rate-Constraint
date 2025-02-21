@@ -102,15 +102,15 @@ class Antonini_Encoder(Context_Aritmetic_Encoder):
 
         # Initialize quality parameters based on the chosen metric
         if self.metric == "MSE":
-            self.cst = 256
+            self.cst = 2*self.N
         elif self.metric == "RMSE":
-            self.cst = 16 / 2  # Adjustment for RMSE scaling.
+            self.cst = 0.5*np.sqrt(2*self.N) # Adjustment for RMSE scaling.
         elif self.metric == "SNR":
             x_test = self.get_x_rec_Antonini(coefs)
             MSE_x = get_quality(x_test, np.zeros(self.N), "MSE")
             self.quality_A = MSE_x / 10**(-quality / 10)  # Convert SNR to MSE equivalent.
             self.metric = "MSE"
-            self.cst = 64
+            self.cst = self.N/2
     
     
     def get_symbol_first(self):
