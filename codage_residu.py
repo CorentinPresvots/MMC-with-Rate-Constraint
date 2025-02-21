@@ -26,7 +26,7 @@ class Residual_Encoder(Antonini_Encoder, Khan_Encoder):
         - factor_scale: Scaling factor applied to coefficients.
         """
         self.N = N  # Signal length
-        M = 10  # Precision for arithmetic encoding
+        M = 12  # Precision for arithmetic encoding
 
         # Initialize Antonini encoder with default parameters
         initial_occurrence_first_Antonini = [1, 1]
@@ -270,7 +270,7 @@ class Residual_Decoder(Antonini_Decoder, Khan_Decoder):
         - factor_scale (float): Scaling factor for the coefficients.
         """
         # Initialize Antonini decoder parameters
-        M = 10
+        M = 12
         initial_occurrence_first_Antonini = [1, 1]
         initial_occurrence_second_Antonini = [1, 1, 1, 1, 1]
         Antonini_Decoder.__init__(
